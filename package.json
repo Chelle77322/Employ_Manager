@@ -1,0 +1,31 @@
+{
+  "name": "employ_manager",
+  "version": "1.0.0",
+  "description": "A content management system for businesses to keep track of their employees",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chelle7332/Employee_Manager.git"
+  },
+  "keywords": [
+    "Employment",
+    "Management"
+  ],
+  "author": "Michelle Hall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chelle7332/Employee_Manager/issues"
+  },
+  "homepage": "https://github.com/Chelle7332/Employee_Manager#readme",
+  "dependencies": {
+    "asciiart": "^1.0.0",
+    "console.table": "^0.10.0",
+    "dotenv": "^8.2.0",
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1",
+    "utility": "^1.17.0"
+  }
+}
