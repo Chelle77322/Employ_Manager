@@ -1,0 +1,6 @@
+index.js
+DB_HOST = localhost
+DB_USER = root
+DB_PASSWORD = s#om*epass!$*
+DB = employment_managementDB
+
