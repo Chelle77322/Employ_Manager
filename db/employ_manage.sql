@@ -1,12 +1,14 @@
 DROP DATABASE IF EXISTS employment_managementDB;
 CREATE DATABASE employment_managementDB;
 USE employment_managementDB;
+DROP TABLE IF EXISTS department;
 CREATE TABLE department
 ( 
 dep_id INT AUTO_INCREMENT NOT NULL,
 dep_name VARCHAR(30),
 PRIMARY KEY (dep_id)
 );
+DROP TABLE IF EXISTS role;
 CREATE TABLE role
 (
 role_id INT AUTO_INCREMENT NOT NULL,
@@ -15,6 +17,8 @@ salary DECIMAL,
 PRIMARY KEY(role_id),
 FOREIGN KEY(dep_id) REFERENCES department(dep_id)
 );
+
+DROP TABLE IF EXISTS employee;
 CREATE TABLE employee
 (
 employee_id INT AUTO_INCREMENT NOT NULL,

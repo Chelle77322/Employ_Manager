@@ -14,6 +14,6 @@ const connection = mysql.createConnection({
     
 });
 
-    console.log('Connected to' + connection);
+  const menuChoices = require('./lib/choices');
     
 
