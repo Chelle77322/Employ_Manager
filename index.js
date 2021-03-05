@@ -1,13 +1,19 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+const db = ("./db");
 require('dotenv').config();
 
 //Makes the connection to the employment_database via the env
-var DB = require('DB');
-DB.connect({
+const port = process.env.PORT;
+const address = process.env.SERVER_ADDRESS;
+
+const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD
-
+    password: process.env.DB_PASSWORD,
+    
 });
-console.log('Connected to'`${DB}`);
+
+    console.log('Connected to' + connection);
+    
+
