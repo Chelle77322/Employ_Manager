@@ -4,30 +4,29 @@ USE employment_managementDB;
 DROP TABLE IF EXISTS department;
 CREATE TABLE department
 ( 
-dep_id INT AUTO_INCREMENT NOT NULL,
-dep_name VARCHAR(30),
-PRIMARY KEY (dep_id)
+id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+dep_name VARCHAR(30)
 );
 DROP TABLE IF EXISTS role;
 CREATE TABLE role
 (
-role_id INT AUTO_INCREMENT NOT NULL,
+id INT AUTO_INCREMENT NOT NULL,
 title VARCHAR(30),
-salary DECIMAL,
+salary DECIMAL(10),
 PRIMARY KEY(role_id),
-FOREIGN KEY(dep_id) REFERENCES department(dep_id)
+dep_id INT NOT NULL,
+CONSTRAINT fk_department FOREIGN KEY (dep_id) References department(id) on delete cascade
 );
 
 DROP TABLE IF EXISTS employee;
 CREATE TABLE employee
 (
-employee_id INT AUTO_INCREMENT NOT NULL,
+id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
-manager_id INT NOT NULL,
-PRIMARY KEY (employee_id),
-FOREIGN KEY (role_id) REFERENCES role(role_id),
-FOREIGN KEY (manager_id) REFERENCES employee(manager_id)
+role_id INT NOT NULL,
+manager_id INT,
+CONSTRAINT fk_department FOREIGN KEY (manager_id) References employee(id) on delete set null
 );
 INSERT INTO  department (dep_name)
 VALUES ('Human Resources'), ('Operations'), ('Web Developing'), ('Software Development'), ('Accounting');

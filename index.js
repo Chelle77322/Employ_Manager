@@ -15,5 +15,7 @@ const connection = mysql.createConnection({
 });
 
   const menuChoices = require('./lib/choices');
+  const userPrompt = require ('./lib/userPrompt');
+  
     
 
