@@ -48,15 +48,13 @@ mainMenu();
 
   const roleQuery = "SELECT role.title FROM role"
   const roleArrayQuery = new querySQL(roleQuery);
-  });
-  
- }
+
  switch (operation.menuChoices) {
 
   case menuChoices[2]:
       //Will return all the employees
       //return viewAllEmp();
-      console.log("This will be employees")
+      return allEmployees();
 
   case menuChoices[3]:
       //This is the case where a user can view all the employees in a given department
@@ -131,9 +129,23 @@ break;
       break;
 }
 
+//This calls all the employees in database
+function allEmployees() {
+  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name
+                   FROM employee
+                   INNER JOIN role on role.id = employee.role_id
+                   INNER JOIN department on department.id = role.department_id;`
+
+  const employeeTable = new querySQL(query);
+  //this line runs the generalTableQuery() method on the sqlquery instance declared by empTable variable.
+  //Mainmenu is delivered as a parameter because it is the function that is essentially used to take user to the next step.
+  employeeTable.standard_tableQuery(mainMenu);
+}
 
 
-
+});
+  
+}
   
     
 
