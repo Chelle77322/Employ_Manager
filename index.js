@@ -23,11 +23,13 @@ console.log ("You are connected to" + connection);
 init();
   //Loads the ascii logo 
   function init() {
-    const EMlogo = logo ({ name: "Employment Manager" }).render();
+   
+    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'magenta', textColor: 'magenta' }).render();
   
     console.log(EMlogo);
   
   }
+  
   
     
 
