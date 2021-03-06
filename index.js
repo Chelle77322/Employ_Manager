@@ -147,5 +147,7 @@ function allEmployees() {
   
 }
   
-    
+module.exports = connection;
+module.exports = mysql;
+module.exports = table; 
 
