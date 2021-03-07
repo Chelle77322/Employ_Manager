@@ -2,11 +2,13 @@
 const logo = require('asciiart-logo');
 const mysql = require('mysql');
 const {prompt}= require ('inquirer');
-const db = ('./db');
 const table = require('table');
-const typeInquire = ['input', 'confirm', 'list']
+const typeInquire = ['input', 'confirm', 'list'];
+const sequelize = require('./config/connection');
 
-require('dotenv').config();
+
+require('dotenv').config({ path:"./env" });
+
 
 //Accesses the env file to set the connection to the mySQL database schema
 const connection = mysql.createConnection({
@@ -14,11 +16,12 @@ const connection = mysql.createConnection({
     port: process.env.PORT,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    address: process.env.SERVER_ADDRESS
+    address: process.env.SERVER_ADDRESS,
+    database: process.env.DB_NAME
     
 });
-console.log ("You are connected to" + connection);
-
+console.log ("You are connected to",`${connection}`);
+ 
 //Accesses the modules for inquirer prompt
   const choices = require('./lib/choices');
   const userPrompt = require ('./lib/userPrompt');
@@ -34,120 +37,134 @@ init();
   
 const startInquirer = require('./lib/inquirer');
 const inquirer = require('inquirer');
-const querySQL = require('./lib/querySQL');
+//const querySQL = require('./lib/querySQL');
 
 mainMenu();
  function mainMenu (){
    const menuChoices = new startInquirer(typeInquire[2],'selectChoice', userPrompt.choiceMenuPrompt, choices);
 
    inquirer.prompt([menuChoices.ask()]).then(operation =>{
-  //Start of queries to bring all the information from each table: department, employees and role
-
-  const departmentQuery = "SELECT department.name FROM department"
-  const departArrayQuery = new querySQL(departmentQuery);
-
-  const roleQuery = "SELECT role.title FROM role"
-  const roleArrayQuery = new querySQL(roleQuery);
-
+  
  switch (operation.menuChoices) {
 
   case menuChoices[2]:
       //Will return all the employees
-      //return viewAllEmp();
+      const allEmployees = () => {
+        console.log("Selecting all employees \n");
+        connection.query("SELECT * FROM employees", (error, result)=>{
+            if (error) throw error;
+            console.log(result);
+            connection.end();
+        });
+    };
       return allEmployees();
 
-  case menuChoices[3]:
+  //case menuChoices[3]:
       //This is the case where a user can view all the employees in a given department
       //queryReturnResult() is a method in my SQLqueries class that will run a query and return the result
       // to the function delivered as the parameter
-      departArrayQuery.queryReturnResult(result);
-      break;
+     // departArrayQuery.returnQuery(result);
+      //break;
 
-  case menuChoices[4]:
+ // case menuChoices[4]:
       //Employees under Manager
-   console.log("This will return all employees under their manager");
-break;
-  case menuChoices[5]:
+   //console.log("This will return all employees under their manager");
+//break;
+  //case menuChoices[5]:
       //shows employees by their role
-      roleArrayQuery.getQueryNoRepeats(reuslt)
-      break;
+    //  roleArrayQuery.getQueryNoRepeats(result)
+      //break;
 
-  case menuChoices[6]:
+  //case menuChoices[6]:
       //This is the case where user can view all the managers and the departments they are in
       //return viewAllManager();
-      console.log("managers will be here");
-      break;
+    //  console.log("managers will be here");
+      //break;
 
-  case menuChoices[7]:
+  //case menuChoices[7]:
       //This is the case for adding an employee
-     console.log("Add a department here");
+    // console.log("Add a department here");
 
-      break;
+      //break;
 
-  case menuChoices[8]:
+  //case menuChoices[8]:
       //This is the case for deleting an employee
-      console.log('remove a department here');
-      break;
+    //  console.log('remove a department here');
+      //break;
 
-  case menuChoices[9]:
+  //case menuChoices[9]:
       //This is the case for the update an employees role funtion
-      console.log("Add a employee role here");
+    //  console.log("Add a employee role here");
 
-      break;
+      //break;
 
-  case menuChoices[10]:
+  //case menuChoices[10]:
       //This is the case for updating an employees manager
-     console.log("remove an employee role");
-     break;
+    // console.log("remove an employee role");
+    // break;
 
-  case menuChoices[11]:
+  //case menuChoices[11]:
       //Adds employee
-      console.log("Adds employee");
-     break;
-  case menuChoices[12]:
+    //  console.log("Adds employee");
+    // break;
+  //case menuChoices[12]:
       //This is the case for removing employee from database.
-     console.log("Removes an employee" )
+    // console.log("Removes an employee" )
 
-  case menuChoices[13]:
+  //case menuChoices[13]:
       //updating employee role.
-     console.log("updating employee role");
-      break;
+    // console.log("updating employee role");
+      //break;
   // return removeRole();
 
-  case menuChoices[0]:
+  //case menuChoices[0]:
       //This is the case for viewing all the departments by name in the company
-     console.log("Time to view all departments");
+   //  console.log("Time to view all departments");
 
-  case menuChoices[1]:
+  //case menuChoices[1]:
       //View all departments
-      console.log("View all departments here");
-      break;
+    //  console.log("View all departments here");
+      //break;
 
-  case menuChoices[14]:
+  //case menuChoices[14]:
       //this is the case where user can delete a department from database
-      console.log("Updates the employee manager");
-      break;
+    //  console.log("Updates the employee manager");
+     // break;
 }
+
+
 
 //This calls all the employees in database
-function allEmployees() {
-  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name
-                   FROM employee
-                   INNER JOIN role on role.id = employee.role_id
-                   INNER JOIN department on department.id = role.department_id;`
+//function allEmployees() {
+  //const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.dep_name FROM employee INNER JOIN role on role.id = employee.role_id INNER JOIN department on department.id = role.dep_id;`
 
-  const employeeTable = new querySQL(query);
+  //const employeeTable = new querySQL(query);
+  //console.log(query);
+  
   //this line runs the generalTableQuery() method on the sqlquery instance declared by empTable variable.
   //Mainmenu is delivered as a parameter because it is the function that is essentially used to take user to the next step.
-  employeeTable.standard_tableQuery(mainMenu);
-}
+  //employeeTable.standard_tableQuery(mainMenu);
+//}
 
+//function viewEmployDepart(depNamesArray) {
+//const departmentNamePrompt = new InquirerFunctions(inquirerTypes[2], 'department_Name', questions.viewAllEmpByDep, depNamesArray);
+  
+  //This line of code runs the instance of inquirerfunctions declared above in the inquirer prompt to deliver user response
+  //inquirer.prompt(departmentNamePrompt.ask()).then(userResp => {
 
+    //  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name
+      //                FROM employee
+        //              INNER JOIN role on role.id = employee.//role_id
+         //             INNER JOIN department on department.id = role.department_id AND department.name = ? ;`
+
+      //const empByDepTable = new SQLquery(query, userResp.department_Name);
+      //this line runs the generalTableQuery() method on the sqlquery instance declared by empByDepTable variable.  This will generate a table to console.
+      //empByDepTable.generalTableQuery(mainMenu);
+  //})
+//}
 });
   
 }
   
 module.exports = connection;
-module.exports = mysql;
-module.exports = table; 
 

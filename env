@@ -1,7 +1,8 @@
 PORT = 3306
 SERVER_ADDRESS = 127.0.0.1
-DB_HOST = localhost
+DB_HOST = 127.0.0.1
 DB_USER = root
 DB_PASSWORD = s#om*epass!$*
-DB = employment_managementDB
+DB_NAME = employment_managementDB
+
 
