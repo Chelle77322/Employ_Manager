@@ -1,4 +1,4 @@
-const { resolve } = require("node:path");
+const path = require("path");
 const connection = require("../config/connection");
 const orm = {
     endConnection: () => {
