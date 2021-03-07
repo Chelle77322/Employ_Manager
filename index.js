@@ -17,11 +17,13 @@ init();
   }
   
 const startInquirer = require('./lib/inquirer');
-
+const typeInquire = ['input', 'confirm', 'list'];
+const userPrompt = require('./lib/userPrompt');
+const choices = require ('./lib/choices');
 
 mainMenu();
  function mainMenu (){
-   const menuChoices = new startInquirer(typeInquire[2],'selectChoice', userPrompt.choiceMenuPrompt, choices);
+   const menuChoices = new startInquirer(typeInquire[2],'Make your choice', userPrompt.choiceMenuPrompt, choices);
    inquirer.prompt([menuChoices.ask()]).then(operation =>{
   //Start of queries to bring all the information from each table: department, employees and role
   const departmentQuery = "SELECT department.name FROM department"
