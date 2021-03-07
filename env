@@ -1,8 +1,5 @@
 DB_PORT = 3306
-SERVER_ADDRESS = 127.0.0.1
-DB_HOST = 127.0.0.1
+DB_HOST = localhost
 DB_USER = admin
 DB_PASSWORD = m*AB$!el99
 DB_NAME = employment_managementDB
-
-
