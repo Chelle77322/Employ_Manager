@@ -6,6 +6,7 @@ require('dotenv').config();
 // Use environment variables to connect to database
 const sequelize = new Sequelize(
   process.env.DB_NAME,
+  process.env.SERVER_ADDRESS,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   {

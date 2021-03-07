@@ -7,7 +7,8 @@ const typeInquire = ['input', 'confirm', 'list'];
 const sequelize = require('./config/connection');
 
 
-require('dotenv').config({ path:"./env" });
+
+require('dotenv').config();
 
 
 //Accesses the env file to set the connection to the mySQL database schema
