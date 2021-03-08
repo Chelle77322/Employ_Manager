@@ -5,7 +5,6 @@ const inquirer = require('inquirer');
 const path = require("path");
 const sequelize = require("sequelize");
 const sequelizeCli = require("sequelize-cli");
-console.log(sequelize);
 
 
 //Declaring variable for ORM part
