@@ -1,11 +1,13 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-const orm = require("./config/objectRM");
+const orm = require("./config/objectRM.js");
 const mysql = require('mysql2');
 const table = require('table');
-const start = require('./lib/inquirer');
+const start = require('./lib/inquirer.js');
 const inquirer = require('inquirer');
 const path = require("path");
+const promptUser = require("./lib/userPrompt");
+
 init();
   //Loads the ascii logo 
   function init() {
@@ -14,97 +16,169 @@ init();
   
     console.log(EMlogo);
   
-  }
+  };
+  const menuChoice = async () => {
+      const menuChoice = await promptUser.menuChoice();
+      switch (menuChoice){
+          case `View all records`:
+              menuView();
+              break;
+        case `Create a new employee record`:
+                menuCreate();
+                break;
+        case `Modify an existing record`:
+            menuModify();
+            break;
+        case `Finish`:
+            orm.endConnection();
+            return;
+            default:
+            break;
+
+
+      }
+  };
   
-const startInquirer = require('./lib/inquirer');
-const typeInquire = ['input', 'confirm', 'list'];
-const userPrompt = require('./lib/userPrompt');
-const choices = require ('./lib/choices');
-
-mainMenu();
- function mainMenu (){
-   const menuChoices = new startInquirer(typeInquire[2],'Make your choice', userPrompt.choiceMenuPrompt, choices);
-   inquirer.prompt([menuChoices.ask()]).then(operation =>{
-  //Start of queries to bring all the information from each table: department, employees and role
-  const departmentQuery = "SELECT department.name FROM department"
-  const departArrayQuery = new querySQL(departmentQuery);
-  const roleQuery = "SELECT role.title FROM role"
-  const roleArrayQuery = new querySQL(roleQuery);
- switch (operation.menuChoices) {
-  case menuChoices[2]:
-      //Will return all the employees
-      //return viewAllEmp();
-      return allEmployees();
-  case menuChoices[3]:
-      //This is the case where a user can view all the employees in a given department
-      //queryReturnResult() is a method in my SQLqueries class that will run a query and return the result
-      // to the function delivered as the parameter
-      departArrayQuery.queryReturnResult(result);
-      break;
-  case menuChoices[4]:
-      //Employees under Manager
-   console.log("This will return all employees under their manager");
-break;
-  case menuChoices[5]:
-      //shows employees by their role
-      roleArrayQuery.getQueryNoRepeats(reuslt)
-      break;
-  case menuChoices[6]:
-      //This is the case where user can view all the managers and the departments they are in
-      //return viewAllManager();
-      console.log("managers will be here");
-      break;
-  case menuChoices[7]:
-      //This is the case for adding an employee
-     console.log("Add a department here");
-      break;
-  case menuChoices[8]:
-      //This is the case for deleting an employee
-      console.log('remove a department here');
-      break;
-  case menuChoices[9]:
-      //This is the case for the update an employees role funtion
-      console.log("Add a employee role here");
-      break;
-  case menuChoices[10]:
-      //This is the case for updating an employees manager
-     console.log("remove an employee role");
-     break;
-  case menuChoices[11]:
-      //Adds employee
-      console.log("Adds employee");
-     break;
-  case menuChoices[12]:
-      //This is the case for removing employee from database.
-     console.log("Removes an employee" )
-  case menuChoices[13]:
-      //updating employee role.
-     console.log("updating employee role");
-      break;
-  // return removeRole();
-  case menuChoices[0]:
-      //This is the case for viewing all the departments by name in the company
-     console.log("Time to view all departments");
-  case menuChoices[1]:
-      //View all departments
-      console.log("View all departments here");
-      break;
-  case menuChoices[14]:
-      //this is the case where user can delete a department from database
-      console.log("Updates the employee manager");
-      break;
+//Presents the option to delete
+const menuDelete = async (table) => {
+    let tableName;
+    if (typeof table === "undefined"){
+        const menuDeleteChoice = await promptUser.menuDelete();
+        switch (menuDeleteChoice){
+            case `Remove Employee`:
+            tableName = `employee`;
+            break;
+        case `Remove a Role`:
+            tableName = `role`;
+            break;
+        }
+    } else {
+        tableName = table;
+    }
+    const idDelete = await promptUser.valueChoice(`${tableName}`);
+    const deleteData = await orm.selectWhereAsync(`*`,
+    tableName,
+    `id`,
+    idDelete,
+    `id`);
+//Condition check for valid id
+if (deleteData.length ===0){
+    console.log(`ID not found in the database. Please try another ID`);
+    const retryDelAction = await promptUser.confirmChoice();
+    if(!retryDelAction){
+        return menuChoice();
+    }else{
+        return menuDeleteChoice(tableName);
+    }
 }
-//This calls all the employees in database
-function allEmployees() {
-  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name
-                   FROM employee
-                   INNER JOIN role on role.id = employee.role_id
-                   INNER JOIN department on department.id = role.department_id;`
-  const employeeTable = new querySQL(query);
-  //this line runs the generalTableQuery() method on the sqlquery instance declared by empTable variable.
-  //Mainmenu is delivered as a parameter because it is the function that is essentially used to take user to the next step.
-  employeeTable.standard_tableQuery(mainMenu);
+//Double check to make sure correct record is being deleted
+console.table(deleteData);
+console.log(`This table will be deleted. Please confirm`);
+const confirmDeletion = await promptUser.confirmChoice();
+if (confirmDeletion){
+    const deleteQuery = await orm.deleteEmpAsync(tableName, idDelete);
+    console.log(deleteQuery.affectedRows !== 0
+        ? `Record has been successfully deleted`:
+        `Failed to delete record`);
 }
-});
-
+else{
+    console.log(`Prospective changes have been discarded by user`);
 }
+menuChoice();
+};
+//Function to modify existing data
+const menuModify = async (table) => {
+    let tableName;
+    //Checks if function is being called from within itself
+    if (typeof table === "undefined") {
+      const menuModifyChoice = await uprompt.menuModify();
+      switch (menuModifyChoice) {
+        case `Modify an Employee`:
+          tableName = `employee`;
+          break;
+        case `Modify a Role`:
+          tableName = `role`;
+          break;
+        case `Modify a Department`:
+          tableName = `department`;
+          break;
+      }
+    } else {
+      tableName = table;
+    }
+    const tableColumnInfor= await orm.getColumnsAsync(tableName);
+    const modifyID = await uprompt.valueChoice(
+      `the ID Number of the ${tableName} Record to Modify`
+    );
+    const modifyViewData = await orm.selectWhereAsync(
+      `*`,
+      tableName,
+      `id`,
+      modifyID,
+      `id`
+    );
+    //Checks if the ID number chosen is valid
+    if (modifyViewData.length === 0) {
+      console.log(`ID not found in database. Do you want to try again?`);
+      const modifyRetry = await uprompt.confirmChoice();
+      if (!modifyRetry) {
+        return menuChoice();
+      } else {
+        return menuModify(tableName);
+      }
+    }
+    console.table(modifyViewData);
+    const modifyViewArray = [];
+    //Chooses columns that can be set by user and not by auto increment
+    tableColumnInfor.forEach((element) => {
+      if (element.Extra !== "auto_increment") {
+        modifyViewArray.push(element.Field);
+      }
+    });
+    console.log("Which field do you want to modify?");
+    const modifyCol = await uprompt.arrayChoice(modifyViewArray);
+    let foreignK;
+    //Checks to see if any values are tied to foreign keys
+    for (i = 0; i < tableColInfo.length; i++) {
+      if (tableColInfo[i].Field === modifyCol) {
+        if (tableColInfo[i].Key === "MUL") {
+          const fkData = await orm.getFKAsync(tableName, modifyCol);
+          //Queries possible values for validation
+          foreignK = await orm.selectAsync(
+            fkData[0].REFERENCED_COLUMN_NAME,
+            fkData[0].REFERENCED_TABLE_NAME,
+            "id"
+          );
+        }
+        const modifyValue = await uprompt.colChoice(
+          modifyCol,
+          tableColumnInfor[i].Type,
+          tableColumnInfor[i].Null,
+          foreignK
+        );
+        //Confirms record modification
+        console.log(
+          `${tableColumnInfor[i].Field} will be replaced with ${modifyValue}. Proceed?`
+        );
+        const modifyConfirm = await promptUser.confirmChoice();
+        if (modifyConfirm) {
+          const modifyQuery = await orm.updateAsync(
+            tableName,
+            modifyCol,
+            modifyValue,
+            modifyID
+          );
+          //Checks for success of request
+          console.log(
+            modifyQuery.changedRows !== 0
+              ? `Record changed successfully`
+              : `Record change failed`
+          );
+        } else {
+          console.log(`Changes discarded`);
+        }
+        console.log(`----------------------------------------`);
+      }
+    }
+    menuChoice();
+  };
