@@ -4,12 +4,15 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
 const sequelize = require("sequelize");
+const sequelizeCli = require("sequelize-cli");
+console.log(sequelize);
+
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
-const { combineTableNames } = require('sequelize/types/lib/utils');
+
 
 
 init();
