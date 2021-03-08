@@ -98,11 +98,8 @@ getColumnAsync: (tableName) => {
     });
 },
 //Selects foreign key information as it relates
-foreignAsync: (tableName, columnName) => {
-    return new Promise ((resolve, reject) => {
-        
-       
-        
+foreignKAsync: (tableName, columnName) => {
+    return new Promise ((resolve, reject) => {       
     });
 },
 
