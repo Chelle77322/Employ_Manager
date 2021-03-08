@@ -3,6 +3,7 @@ const logo = require('asciiart-logo');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
+const sequelize = require("sequelize");
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
