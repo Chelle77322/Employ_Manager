@@ -1,14 +1,15 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
 const mysql = require('mysql2');
-const start = require('./lib/inquirer.js');
 const inquirer = require('inquirer');
 const path = require("path");
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
-const promptUser = require("./lib/userPrompt.js");
+const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
+const { combineTableNames } = require('sequelize/types/lib/utils');
+
 
 init();
   //Loads the ascii logo 
@@ -43,6 +44,30 @@ const startMenuChoice = await promptUser.startMenu();
             break;
     }
   };
+const menuDepartment = async () => {
+    const dep_id = await promptUser.valueChoice(
+        `the ID Number of the Department`
+    );
+    const viewDepartment = await orm.selectWhereAsync(
+        `*`,
+        `department`,
+        `id`,
+        dep_id,
+        `id`
+    );
+    if (viewDepartment.length === 0){
+        console.log (`ID not found in employment management database. Please enter new id`);
+    const retryDepartment = await promptUser.confirmChoice();
+    if(!retryDepartment){
+    return startMenu();
+    } else {
+        return menuDepartment();
+    }
+    }
+    const departmentData = await orm.selectDepartment(dep_id);
+    console.table(departmentData);
+    startMenu();
+};
   
 //Presents the option to delete
 const menuDelete = async (table) => {
@@ -62,7 +87,7 @@ const menuDelete = async (table) => {
     } else {
         tableName = table;
     }
-    const idDelete = await promptUser.valueChoice(`${tableName}`);
+    const idDelete = await promptUser.valueChoice(`the ID pf ${tableName} Record to be deleted`);
     const deleteData = await orm.selectWhereAsync(`*`,
     tableName,
     `id`,
@@ -76,7 +101,7 @@ if (deleteData.length === 0){
     if(!retryDelAction){
         return startMenu();
     }else{
-        return menuDeleteChoice(tableName);
+        return menuDelete(tableName);
     }
 }
 //Double check to make sure correct record is being deleted
@@ -118,7 +143,7 @@ const menuModify = async (table) => {
     const modifyID = await promptUser.valueChoice(
       `the ID Number of the ${tableName} Record to Modify`
     );
-    const modifyViewData = await orm.selectWhereAsync(
+    const dataModify = await orm.selectWhereAsync(
       `*`,
       tableName,
       `id`,
@@ -126,16 +151,16 @@ const menuModify = async (table) => {
       `id`
     );
     //Checks if the ID number chosen is valid
-    if (modifyViewData.length === 0) {
+    if (dataModify.length === 0) {
       console.log(`ID not found in database. Do you want to try again?`);
-      const modifyRetry = await promptUser.confirmChoice();
-      if (!modifyRetry) {
+      const retryModification = await promptUser.confirmChoice();
+      if (!retryModification) {
         return startMenu();
       } else {
         return menuModify(tableName);
       }
     }
-    console.table(modifyViewData);
+    console.table(dataModify);
     const modifyViewArray = [];
     //Chooses columns that can be set by user and not by auto increment
     tableColumnInfor.forEach((element) => {
@@ -150,7 +175,7 @@ const menuModify = async (table) => {
     for (i = 0; i < tableColInfo.length; i++) {
       if (tableColInfo[i].field === modifyColumn) {
         if (tableColInfo[i].key === "MUL") {
-          const fkData = await orm.foreignKAsync(tableName, modifyCol);
+          const fkData = await orm.foreignKAsync(tableName, modifyColumn);
           //Queries possible values for validation
           foreignK = await orm.selectAsync(
             fkData[0].REFERENCED_COLUMN_NAME,
@@ -158,18 +183,18 @@ const menuModify = async (table) => {
             "id"
           );
         }
-        const modifyValue = await promptUser.columnChoice(
-          modifyCol,
+        const valueModify = await promptUser.columnChoice(
+          modifyColumn,
           tableColumnInfor[i].type,
           tableColumnInfor[i].null,
           foreignK
         );
         //Confirms record modification
         console.log(
-          `${tableColumnInfor[i].field} will be replaced with ${modifyValue}. Proceed?`
+          `${tableColumnInfor[i].field} will be replaced with ${valueModify}. Proceed?`
         );
-        const modifyConfirm = await promptUser.confirmChoice();
-        if (modifyConfirm) {
+        const confirmModification = await promptUser.confirmChoice();
+        if (confirmModification) {
           const modifyQuery = await orm.updateEmpAsync(
             tableName,
             columnName,
@@ -186,12 +211,98 @@ const menuModify = async (table) => {
           console.log(`Changes discarded`);
         }
       }
+      startMenu();
+    };
+//Handles menuView to show data
+const menuView = async () => {
+    const menuViewChoices = await promptUser.menuView();
+    let dataView;
+    let tableName;
+    switch  (menuViewChoices){
+        case ` View all employees`:
+            dataView = await orm.selectAsync ("*", "employee", "id");
+            tableName = `employee`;
+            break;
+        case `View all Roles`:
+            dataView = await orm.selectAsync("*", "role", "id");
+            tableName = `role`;
+            break;
+        case `View all Departments`:
+        dataView = await orm.selectAsync("*", "department","id");
+        tableName = `department`;
+        break;
     }
-    const queryCreate = await orm.createEmpAsync(tableName,columnName,[columnValue,]);
-    console.log(queryCreate.affectedRows !== 0
-        ? `Record has been created`
-        : `Record creation failed`
-    );
+    //Check if filter needs to be applied to queries
+    const menuFilter = await promptUser.filterChoice();
+    switch (menuFilter){
+        case `View All`:
+            console.table(dataView);
+        break;
+        case `View with Filter`:
+            console.log(`What criteria do you want to filter the records? \n`);
+        const columnView = await promptUser.choiceArray(dataView[0]);
+        const view = await promptUser.valueChoice(columnView);
+        const filterViewData = await orm.selectWhereAsync("*", tableName, columnView,view, `id`);
+        switch (filterViewData.length){
+            case 0:
+            console.log(`No records where found with that matched the critera\n`);
+            break;
+            default:
+            console.table(filterViewData);
+            break;
+        }
+        break;
+    }
     startMenu();
-  };
+};
+const menuCreate = async () => {
+    const menuCreateChoice = await promptUser.menuCreate();
+    let tableName;
+    switch (menuCreateChoice){
+        case`Create an Employee`:
+        tableName = `employee`;
+        break;
+        case `Create a Role`:
+        tableName = `role`;
+        break;
+        case `Create a Department`:
+        tableName = `department`;
+        break;
+    }
+//Gets existing table column information
+const tableColumnInfor = await orm.getColumnAsync(tableName);
+const columnsCreate = [];
+const valueCreate = [];
+for ( j = 0; j < tableColumnInfor.length; j++) {
+    if (tableColumnInfor[j].Extra != "AUTO_INCREMENT"){
+        let ForeignK;
+        if (tableColumnInfor[j].key === "NULL"){
+            const fkData = await orm.getForeignKAsync(tableName, tableColumnInfor[j].field);
+            ForeignK = await orm.selectAsync(
+                fkData[0].REFERENCED_COLUMN_NAME,
+                fkData[0].REFERENCED_TABLE_NAME,
+                "id"
+            );
+        }
+const valueCreate = await promptUser.columnChoice(
+    tableColumnInfor[j].field,
+    tableColumnInfor[j].type,
+    tableColumnInfor[j].null,
+    ForeignK
+);
+if(valueCreate !== ""){
+    valueCreate.push(valueCreate);
+    columnsCreate.push (tableColumnInfor[j].field);
+    }
+  }
+}
+//Uses sql query to create the record in mysql database
+const queryCreate = await orm.createEmpAsync(tableName, columnsCreate,[valueCreate]);
+console.log(queryCreate.affectedRows !== 0
+    ? ` Record has been created`:
+    `Record failed to be created`);
+startMenu();
+};
+}; 
+    
   startMenu();
