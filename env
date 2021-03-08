@@ -1,5 +1,6 @@
-DB_PORT = 3306
+index.js
 DB_HOST = localhost
 DB_USER = admin
 DB_PASSWORD = m*AB$!el99
 DB_NAME = employment_managementDB
+PORT = 3306

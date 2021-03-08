@@ -35,8 +35,12 @@
     "table": "^6.0.7",
     "utility": "^1.17.0"
   },
-   "devDependencies": {
+  "devDependencies": {
     "dotenv": "^8.2.0"
-   }
-
+  },
+  "directories": {
+    "lib": "lib",
+    "config": "config",
+    "db": "db"
+  }
 }
