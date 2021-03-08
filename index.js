@@ -12,11 +12,10 @@ const table = require('console.table');
 const start = require('./lib/inquirer.js');
 
 init();
-
-  //Loads the ascii logo 
+//Loads the ascii logo 
  function init() {
    
-    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'magenta', textColor: 'magenta' }).render();
+const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'magenta', textColor: 'magenta' }).render();
   
     console.log(EMlogo);
   
@@ -26,6 +25,7 @@ const typeInquire = ['input', 'confirm', 'list'];
 const userPrompt = require('./lib/userPrompt.js');
 const choices = require ('./lib/choices.js');
 const querySQL = require('./lib/querySQL.js');
+const { end } = require('./config/connection.js');
 
 startMenu();
  function startMenu (){
@@ -112,17 +112,16 @@ break;
     //const employeeTable = new querySQL(query);
     //employeeTable.standard_tableQuery(startMenu);
 //};
-function allDepartments() {
-
-  const query = `SELECT department.dep_name
-                  FROM department`
-
-  const depTable = new querySQL(query);
-
-  depTable.standard_tableQuery(startMenu);
-  
-}
-
+const allDepartments = () => {
+  console.log('Selecting all departments...\n');
+  connection.query('SELECT * FROM department', (error, result) => {
+    if (error) throw error;
+    // Log all results of the SELECT statement
+    console.log(result);
+    
+   
+  });
+};
 
 });
 }
