@@ -19,13 +19,12 @@ const connection = mysql.createConnection({
 //console.log(connection);
 
 
-connection.connect(function (err) {
-  if (err) {
-   console.error("error connecting: " + err.stack);
-    return;
-  }
-  //console.log("connected as id " + connection.threadId);
-   //console.log("--------------------------------------");
+connection.connect((error)=>{
+  if (error) throw error;
+   console.error("error connecting: " + error.stack);
+  console.log(`connected as id ${connection.threadId}\n`);
+
+  
 });
 
 module.exports = connection;
