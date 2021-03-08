@@ -17,9 +17,11 @@ init();
     console.log(EMlogo);
   
   };
-  const menuChoice = async () => {
-      const menuChoice = await promptUser.menuChoice();
-      switch (menuChoice){
+  const startMenu = async () => {
+      const startMenuChoice = await promptUser.startMenu();
+      console.log(promptUser);
+      
+      switch (startMenuChoice){
           case `View all records`:
               menuView();
               break;
@@ -34,9 +36,7 @@ init();
             return;
             default:
             break;
-
-
-      }
+    }
   };
   
 //Presents the option to delete
@@ -61,12 +61,13 @@ const menuDelete = async (table) => {
     `id`,
     idDelete,
     `id`);
+    
 //Condition check for valid id
-if (deleteData.length ===0){
+if (deleteData.length === 0){
     console.log(`ID not found in the database. Please try another ID`);
     const retryDelAction = await promptUser.confirmChoice();
     if(!retryDelAction){
-        return menuChoice();
+        return startMenu();
     }else{
         return menuDeleteChoice(tableName);
     }
@@ -84,7 +85,7 @@ if (confirmDeletion){
 else{
     console.log(`Prospective changes have been discarded by user`);
 }
-menuChoice();
+startMenu();
 };
 //Function to modify existing data
 const menuModify = async (table) => {
@@ -122,7 +123,7 @@ const menuModify = async (table) => {
       console.log(`ID not found in database. Do you want to try again?`);
       const modifyRetry = await uprompt.confirmChoice();
       if (!modifyRetry) {
-        return menuChoice();
+        return startMenu();
       } else {
         return menuModify(tableName);
       }
@@ -150,7 +151,7 @@ const menuModify = async (table) => {
             "id"
           );
         }
-        const modifyValue = await uprompt.colChoice(
+        const modifyValue = await uprompt.columnChoice(
           modifyCol,
           tableColumnInfor[i].Type,
           tableColumnInfor[i].Null,
@@ -162,11 +163,11 @@ const menuModify = async (table) => {
         );
         const modifyConfirm = await promptUser.confirmChoice();
         if (modifyConfirm) {
-          const modifyQuery = await orm.updateAsync(
+          const modifyQuery = await orm.updateEmpAsync(
             tableName,
-            modifyCol,
-            modifyValue,
-            modifyID
+            columnName,
+            columnValue,
+            recordID
           );
           //Checks for success of request
           console.log(
@@ -180,5 +181,11 @@ const menuModify = async (table) => {
         console.log(`----------------------------------------`);
       }
     }
-    menuChoice();
+    const queryCreate = await orm.createEmpAsync(tableName,columnName,[columnValue,]);
+    console.log(queryCreate.affectedRows !== 0
+        ? `Record has been created`
+        : `Record creation failed`
+    );
+    startMenuChoice();
   };
+  startMenu();

@@ -1,5 +1,5 @@
 const path = require("path");
-const connection = require("../config/connection");
+const connection = require("../config/connection.js");
 const orm = {
     endConnection: () => {
         connection.end ();

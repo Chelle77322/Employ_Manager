@@ -13,12 +13,12 @@ const connection = mysql.createConnection({
   port : process.env.PORT
 });
 
-console.log(process.env[`DB_HOST`]);
-console.log(process.env[`DB_USER`]);
-console.log(process.env[`DB_PASSWORD`]);
-console.log(process.env[`DB_NAME`]);
-console.log(process.env[`PORT`]);
-console.log(connection);
+//console.log(process.env[`DB_HOST`]);
+//console.log(process.env[`DB_USER`]);
+//console.log(process.env[`DB_PASSWORD`]);
+//console.log(process.env[`DB_NAME`]);
+//console.log(process.env[`PORT`]);
+//console.log(connection);
 
 
 connection.connect(function (err) {
@@ -26,7 +26,7 @@ connection.connect(function (err) {
    console.error("error connecting: " + err.stack);
     return;
   }
-  console.log("connected as id " + connection.threadId);
+  //console.log("connected as id " + connection.threadId);
    //console.log("--------------------------------------");
 });
 
