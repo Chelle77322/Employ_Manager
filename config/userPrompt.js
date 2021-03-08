@@ -73,8 +73,11 @@ valueChoice: async (valueName) => {
                 `Finish`,
             ],
         };
-        return promptUser.listReturn(options);
+        
+       return promptUser.listReturn(options);
+    
     },
+    
     menuCreate: () => {
         const options ={
             choices:[`Create an Employee`, `Create a Role`, `Create a Department`],
@@ -114,5 +117,5 @@ valueChoice: async (valueName) => {
 };
 }
 };
-module.exports = promptUser
+module.exports = promptUser;
     
