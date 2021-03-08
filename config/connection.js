@@ -2,9 +2,7 @@ const mysql = require("mysql");
 const util = require("util");
 const path = require("path");
 require('dotenv').config({path: __dirname +`/../env`});
-
-
-console.log(path);
+//Creates the connection to the mysql database
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

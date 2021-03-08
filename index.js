@@ -4,15 +4,12 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
 const sequelize = require("sequelize");
-const sequelizeCli = require("sequelize-cli");
-
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
-
-
+const { selectAsync, selectWhereAsync, selectDepartment, createEmpAsync } = require('./config/objectRM.js');
 
 init();
   //Loads the ascii logo 
@@ -24,7 +21,9 @@ init();
   
   };
   //Gives the user a menu to choose from
+  
 const startMenu = async () => {
+    
 const startMenuChoice = await promptUser.startMenu();
 
     switch (startMenuChoice){
@@ -309,3 +308,4 @@ startMenu();
 }; 
     
   startMenu();
+ 
