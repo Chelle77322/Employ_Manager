@@ -42,13 +42,13 @@ startMenu();
 switch (operation.menuChoices) {
   case menuChoices[2]:
       //Will return all the employees
-      //return viewAllEmp();
-      return allEmployees();
+     
+      //return allEmployees();
   case menuChoices[3]:
       //This is the case where a user can view all the employees in a given department
       //queryReturnResult() is a method in my SQLqueries class that will run a query and return the result
       // to the function delivered as the parameter
-      departArrayQuery.queryReturnResult(result);
+     
       break;
   case menuChoices[4]:
       //Employees under Manager
@@ -56,7 +56,7 @@ switch (operation.menuChoices) {
 break;
   case menuChoices[5]:
       //shows employees by their role
-      roleArrayQuery.getQueryNoRepeats(reuslt)
+     
       break;
   case menuChoices[6]:
       //This is the case where user can view all the managers and the departments they are in
@@ -96,23 +96,33 @@ break;
      console.log("Time to view all departments");
   case menuChoices[1]:
       //View all departments
-      console.log("View all departments here");
-      break;
+      return allDepartments();
   case menuChoices[14]:
       //this is the case where user can delete a department from database
       console.log("Updates the employee manager");
       break;
 }
 //Shows all employees
-function allEmployees() {
-    const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.dep_name
-    FROM employee
-    INNER JOIN role on role.id = employee.role_id
-    INNER JOIN department on dep_id = role.dep_id;`
+//function allEmployees() {
+  //  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.dep_name
+    //FROM employee
+    //INNER JOIN role on role.id = employee.role_id
+    //INNER JOIN department on dep_id = role.dep_id;`
 
-    const employeeTable = new querySQL(query);
-    employeeTable.standard_tableQuery(startMenu);
+    //const employeeTable = new querySQL(query);
+    //employeeTable.standard_tableQuery(startMenu);
+//};
+function allDepartments() {
+
+  const query = `SELECT department.dep_name
+                  FROM department`
+
+  const depTable = new querySQL(query);
+
+  depTable.standard_tableQuery(startMenu);
+  
 }
+
 
 });
 }
