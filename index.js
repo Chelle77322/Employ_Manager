@@ -32,8 +32,8 @@ init();
   };
 
 //Gives the user a menu to choose from
-const startMenu = async() => {
-const startMenuChoice = promptUser.startMenu() // Start Menu is not a function
+const startMenu = () => {
+inquirer.prompt()
     switch (startMenuChoice){
           case `View all records`:
             menuView();
