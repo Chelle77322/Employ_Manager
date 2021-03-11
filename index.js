@@ -4,9 +4,11 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
 
+
 //Sequelize Connection information
-const express = require('express');
+const express = require ('express');
 const sequelize = require ('./config/connection');
+const app = express();
 
 app.use(express.json());
 app.use(express.urlendconded({ extended: true}));

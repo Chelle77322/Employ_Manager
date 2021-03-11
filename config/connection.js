@@ -1,20 +1,25 @@
-const mysql = require("mysql");
+const path = require ('path');
 const Sequelize = require('sequelize');
-require ('dotenv').config();
-//Using env file to make connection to mySQL database
-const sequelize = new Sequelize
-(
-process.env.DB_HOST,
-process.env.DB_USER,
-process.env.DB_PASSWORD,
-process.env.DB_NAME,
-process.env.PORT,
-process.env.DIALECT
+require ('dotenv').config({path: __dirname +`/../env`});
+
+//Accessing the environment variables to use to connect to mySQL database employment_managementDB
+
+const sequelize = new Sequelize (
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  process.env.DB_HOST,
+  process.env.PORT,
+  process.env.DIALECT,
+  {
+    host:'localhost',
+    dialect:'mysql',
+    port: 3306
+  }
 );
 
 
-
-
+module.exports = sequelize;
 
 //const util = require("util");
 //const path = require("path");
@@ -36,4 +41,4 @@ process.env.DIALECT
   
 //});
 
-module.exports = sequelize;
+
