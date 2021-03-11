@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT ||
 
 app.use(express.json());
-app.use(express.urlendconded({ extended: true}));
+app.use(express.urlencoded({ extended: true}));
 sequelize.sync().then(()=>{
     app.listen(PORT, () => console.log('We are now connected and listening '));
 });
