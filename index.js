@@ -9,6 +9,7 @@ const path = require("path");
 const express = require ('express');
 const sequelize = require ('./config/connection');
 const app = express();
+const PORT = process.env.PORT ||
 
 app.use(express.json());
 app.use(express.urlendconded({ extended: true}));
