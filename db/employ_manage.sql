@@ -1,43 +1,33 @@
 DROP DATABASE IF EXISTS employment_managementDB;
 CREATE DATABASE employment_managementDB;
+
 USE employment_managementDB;
-DROP TABLE IF EXISTS department;
+-- Creating the department table with an auto incrementing id field--
 CREATE TABLE department
-( 
-id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-dep_name VARCHAR(30)
+(
+id INTEGER(11) AUTO_INCREMENT NOT NULL,
+name VARCHAR(30) NOT NULL,
+PRIMARY KEY(id)
 );
-DROP TABLE IF EXISTS role;
+-- Creating the role table with an auto incrementing id field and using department_id as foreign key.
 CREATE TABLE role
 (
-id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-title VARCHAR(30),
-salary DECIMAL(10),
-dep_id INT NOT NULL,
-CONSTRAINT fk_department FOREIGN KEY (dep_id) References department(id) on delete cascade
+id INTEGER(11) AUTO_INCREMENT NOT NULL,
+title VARCHAR(30) NOT NULL,
+salary DECIMAL(10) NOT NULL,
+PRIMARY KEY (id),
+department_id INTEGER(11) NOT NULL,
+FOREIGN KEY (department_id) REFERENCES department(department.id)
 );
-
-DROP TABLE IF EXISTS employee;
+--Creating the employee table with an auto incrementing id field and using role_id linked to the role table and manager_id linked to the employee table as foreign keys
 CREATE TABLE employee
 (
-id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY,
+id INTEGER(11) AUTO_INCREMENT NOT NULL,
 first_name VARCHAR(30) NOT NULL,
-last_name VARCHAR(30) NOT NULL,
-role_id INT NOT NULL,
-manager_id INT,
-CONSTRAINT fk_employee FOREIGN KEY (manager_id) References employee(id) on delete set null
-CONSTRAINT fk_role FOREIGN KEY(role_id) References role(role_id)
+last_name VARCHAR(30), NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (role_id) REFERENCES role(role.id),
+FOREIGN KEY (manager_id) REFERENCES employee(employee.id)
 );
 
 
-INSERT INTO  department (dep_name)
-VALUES ('Human Resources'), ('Operations'), ('Web Developing'), ('Software Development'), ('Accounting');
-
-INSERT INTO role (title, salary, dep_id)
-VALUES
-    ('HR Manager', 88000, 3), ('Operations Manager', 95000, 2),
-    ('Full Stack Developer', 110000, 1), ('Software Engineer', 120000, 1),
-     ('Accounts Manager', 88000, 3),('Web Developer', 90000, 1);
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES
-('Simone', 'Hasda',3, NULL), ('Max', 'Paparella', 2, NULL), ('Michelle', 'Hall', 1,NULL);
