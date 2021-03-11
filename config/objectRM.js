@@ -29,6 +29,7 @@ selectWhereAsync: (tableColumn, tableName, columnName, columnValue, sortColumn) 
             (error, result) => {
                 if (error) reject(error);
                 resolve(result);
+            
             }
         );
 
@@ -36,12 +37,13 @@ selectWhereAsync: (tableColumn, tableName, columnName, columnValue, sortColumn) 
 
 },
 //Displays employee count for a department
-selectDepartment: (dep_id) => {
+selectDepartment: (department_id) => {
     return new Promise ((resolve, reject)=>{
-        const queryString = "SELECT dep_id, sum(salary) AS salary COUNT (employee.id) as employees, department.dep_name AS department name from employee JOIN role ON employee.role_id = role.id JOIN department on role.department_id = department.dep_id WHERE department.dep_id = ?";
+        const queryString = "SELECT department.id, sum(salary) AS salary COUNT (employee.id) as employees, department.name AS department name from employee JOIN role ON employee.role_id = role.id JOIN department on role.department_id = department.id WHERE department.id = ?";
         connection.query(queryString, [dep_id], (error, result)=> {
             if (error) reject (error);
             resolve(result);
+            console.log(connection);
         });
     });
 },

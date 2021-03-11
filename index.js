@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true}));
       sequelize.sync({force: false}).then(() => {
         app.listen(PORT, () => console.log('We are now connected and listening '));
 
-});
+    }); 
 init();
 //Loads the ascii logo 
  function init() {
@@ -60,6 +60,7 @@ const startMenu = () => {
       ],
     
     }).then((answers) => {
+        console.log(answers); 
     
     switch (answers.action){
     //All viewing cases here
@@ -88,41 +89,57 @@ const startMenu = () => {
         case `Click to add a new role`:
                 menuCreateRole();
             break;
-        case `Modify an existing record`:
-            menuModify();
+    //All modifications to records are met here
+        case `Click to modify an employees manager`:
+            menuModifyEmployeeManager();
             break;
-        case `Deletes an existing record`:
-            menuDelete();
+        case `Click to update an employees role`:
+            menuUpdateEmployeeRole();
+            break;
+    //All deletions to records in database here
+        case `Click to remove an employee`:
+            menuDeleteEmployee();
+        
+            break;
+        case `Click to remove a role`:
+                menuDeleteRole();
+               
+            break;
+        case `Click to remove a department`:
+                    menuDeleteDepartment();
+                    
             break;
         case `Finish`:
             orm.endConnection();
             return;
             default:
             break;
-           
+                
     };
- 
+    
 });
+ 
 }
-  
-  const menuDepartment = async () => {
+
+const menuViewDepartments = async () => {
     const department_id = await promptUser.valueChoice(
-        `the ID Number of the Department`
+     
     );
     const viewDepartment = await orm.selectWhereAsync(
         `*`,
         `department`,
         `id`,
         department_id,
-        `id`
+        `id`,
+   
     );
     if (viewDepartment.length === 0){
-        console.log (`ID not found in employment management database. Please enter new id`);
+        console.log (`${department_id}`);
     const retryDepartment = await promptUser.confirmChoice();
     if(!retryDepartment){
     return startMenu();
     } else {
-        return menuDepartment();
+        return menuViewDepartments();
     }
     }
     const departmentData = await orm.selectDepartment(dep_id);
