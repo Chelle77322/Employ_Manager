@@ -7,7 +7,7 @@ const path = require("path");
 
 //Sequelize Connection information
 const express = require ('express');
-const sequelize = require ('./config/connection');
+const sequelize = require('./config/connection.js');
 const app = express();
 const PORT = process.env.PORT ||
 
@@ -22,6 +22,7 @@ const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
 
+
 init();
 //Loads the ascii logo 
  function init() {
@@ -31,7 +32,7 @@ init();
 
 //Gives the user a menu to choose an option from
 const startMenu = () => {
- return inquirer.prompt([{
+ return inquirer.prompt({
      name: "action",
      type: "list",
      message: "Please make a selection from the list below:",
@@ -52,8 +53,10 @@ const startMenu = () => {
         "Click to modify an employees manager",
         "Click to finish",
       ],
- }]);
-    switch (startMenuChoice){
+    
+    }).then((answer) => {
+    
+    switch (choices){
           case `View all records`:
             menuView();
             break;
@@ -73,9 +76,9 @@ const startMenu = () => {
             break;
            
     };
-    startMenu(); 
-  
-  };
+ 
+});
+}
   
   const menuDepartment = async () => {
     const department_id = await promptUser.valueChoice(
