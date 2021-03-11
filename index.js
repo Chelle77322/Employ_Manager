@@ -25,15 +25,15 @@ app.use(express.urlencoded({ extended: true}));
         sequelize.close();
       });
       sequelize.sync({force: false}).then(() => {
-        app.listen(PORT, () => console.log('We are now connected and listening ' + `${sequelize}`));
+        app.listen(PORT, () => console.log('We are now connected and listening '));
+
 });
 init();
 //Loads the ascii logo 
  function init() {
    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'yellow', textColor: 'magenta' }).render();
     console.log(EMlogo);
-    
-  };
+};
 
 //Gives the user a menu to choose an option from
 const startMenu = () => {
@@ -59,14 +59,34 @@ const startMenu = () => {
         "Click to finish",
       ],
     
-    }).then((choice) => {
+    }).then((answers) => {
     
-    switch (choice.action){
-          case `View all records`:
-            menuView();
+    switch (answers.action){
+    //All viewing cases here
+        case `Click to view all current employees`:
+                menuViewEmployees();
             break;
-        case `Create a new employee record`:
-            menuCreate();
+        case `Click to view all departments`:
+                menuViewDepartments();
+            break;
+
+        case `Click to view all roles`:
+                menuViewRoles();
+            break;
+        case `Click to view all employees by manager`:
+                menuViewByManager();
+            break;
+            
+    //All creating records here
+        case `Click to add a new employee`:
+                menuCreateEmployee();
+            break;
+
+        case `Click to add a new department`:
+                menuCreateDepartment();
+            break;
+        case `Click to add a new role`:
+                menuCreateRole();
             break;
         case `Modify an existing record`:
             menuModify();
