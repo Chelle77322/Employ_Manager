@@ -5,8 +5,8 @@ require ('config-json');
 
 //Accessing the environment variables to use to connect to mySQL database employment_managementDB
 let sequelize;
-if(process.env.DB_NAME){
-  sequelize = new Sequelize(process.env.DB_NAME);
+if(process.env.JAWSDB_URL){
+  sequelize = new Sequelize(process.env.JAWSDB_URL);
 } else {
   sequelize = new Sequelize (
     process.env.DB_NAME,
