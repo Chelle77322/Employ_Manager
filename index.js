@@ -21,8 +21,6 @@ sequelize.sync({force: false}).then(()=>{
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
-const typeInquire = ['input', 'confirm', 'list'];
-//const startInquirer = require('./lib/inquirer.js');
 
 init();
 //Loads the ascii logo 
@@ -31,12 +29,30 @@ init();
     console.log(EMlogo);
   };
 
-//Gives the user a menu to choose from
+//Gives the user a menu to choose an option from
 const startMenu = () => {
- return typeInquirer.prompt([{
-     
-
- }])
+ return inquirer.prompt([{
+     name: "action",
+     type: "list",
+     message: "Please make a selection from the list below:",
+     choices:
+     [
+        "Click to view all current employees",
+        "Click to view all departments",
+        "Click to view all roles",
+        "Click to add a new employee",
+        "Click to add a new department",
+        "Click to add a new role",
+        "Click to remove an employee",
+        "Click to remove a role",
+        "Click to remove a department",
+        "Click to view total company wage",
+        "Click to view all employees by manager",
+        "Click to update an employees role",
+        "Click to modify an employees manager",
+        "Click to finish",
+      ],
+ }]);
     switch (startMenuChoice){
           case `View all records`:
             menuView();
@@ -326,5 +342,5 @@ startMenu();
 };
 }; 
     
-  startMenu();
+
 
