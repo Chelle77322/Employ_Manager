@@ -73,7 +73,8 @@ valueChoice: async (valueName) => {
                 `Finish`,
             ],
         };
-        
+        console.log(promptUser);
+        console.log(startMenu());
        return promptUser.listReturn(options);
     
     },

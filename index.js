@@ -3,7 +3,18 @@ const logo = require('asciiart-logo');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
-const sequelize = require("sequelize");
+
+//Sequelize Connection information
+const express = require('express');
+const sequelize = require ('./config/connection');
+
+app.use(express.json());
+app.use(express.urlendconded({ extended: true}));
+sequelize.sync().then(()=>{
+    app.listen(PORT, () => console.log('We are now connected and listening '));
+});
+
+
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
@@ -13,19 +24,15 @@ const typeInquire = ['input', 'confirm', 'list'];
 const startInquirer = require('./lib/inquirer.js');
 
 init();
-
-  //Loads the ascii logo 
+//Loads the ascii logo 
  function init() {
-   
-    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'magenta', textColor: 'magenta' }).render();
-  
+   const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'yellow', textColor: 'magenta' }).render();
     console.log(EMlogo);
-  
-};
-  //Gives the user a menu to choose from
-const startMenu = async ()=>{
-const startMenuChoice = await promptUser.startMenu();
+  };
 
+//Gives the user a menu to choose from
+const startMenu = async () =>{
+const startMenuChoice = await promptUser.startMenu(); // Start Menu is not a function
     switch (startMenuChoice){
           case `View all records`:
             menuView();
@@ -44,7 +51,7 @@ const startMenuChoice = await promptUser.startMenu();
             return;
             default:
             break;
-    }
+    };
     startMenu();
   };
   
@@ -125,7 +132,7 @@ else{
 }
  return startMenu();
 };
-startMenu();
+startMenu();// StartMenu is not a function
 //Function to modify existing data
 const menuModify = async (table) => {
     let tableName;
