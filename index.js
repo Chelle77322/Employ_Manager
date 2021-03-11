@@ -3,31 +3,36 @@ const logo = require('asciiart-logo');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
-
-
 //Sequelize Connection information
 const express = require ('express');
 const sequelize = require('./config/connection.js');
 const app = express();
-const PORT = process.env.PORT ||
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
-sequelize.sync({force: false}).then(()=>{
-    app.listen(PORT, () => console.log('We are now connected and listening '));
-});
+const PORT = process.env.PORT || 3306;
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
+    sequelize.authenticate().then(() => {
+        console.log('Connection established successfully.');
+      }).catch(error => {
+        console.error('Unable to connect to the database:', error);
+      }).finally(() => {
+        sequelize.close();
+      });
+      sequelize.sync({force: false}).then(() => {
+        app.listen(PORT, () => console.log('We are now connected and listening ' + `${sequelize}`));
+});
 init();
 //Loads the ascii logo 
  function init() {
    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'yellow', textColor: 'magenta' }).render();
     console.log(EMlogo);
+    
   };
 
 //Gives the user a menu to choose an option from
@@ -54,9 +59,9 @@ const startMenu = () => {
         "Click to finish",
       ],
     
-    }).then((answer) => {
+    }).then((choice) => {
     
-    switch (choices){
+    switch (choice.action){
           case `View all records`:
             menuView();
             break;

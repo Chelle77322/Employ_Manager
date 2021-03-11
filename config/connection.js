@@ -1,4 +1,4 @@
-const path = require ('path');
+const path = 'mysql: //admin:admin@localhost:3306/employment_managementDB';
 const Sequelize = require('sequelize');
 require ('dotenv').config({path: __dirname +`/../env`});
 require ('config-json');
@@ -18,9 +18,14 @@ if(process.env.JAWSDB_URL){
       dialect:'mysql',
       port: 3306
     }
-  );
-
-}
+    
+);
+  }
 
 module.exports = sequelize;
+
+
+
+
+
 
