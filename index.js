@@ -22,7 +22,7 @@ const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
 const typeInquire = ['input', 'confirm', 'list'];
-const startInquirer = require('./lib/inquirer.js');
+//const startInquirer = require('./lib/inquirer.js');
 
 init();
 //Loads the ascii logo 
@@ -33,7 +33,10 @@ init();
 
 //Gives the user a menu to choose from
 const startMenu = () => {
-inquirer.prompt()
+ return typeInquirer.prompt([{
+     
+
+ }])
     switch (startMenuChoice){
           case `View all records`:
             menuView();

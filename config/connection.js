@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 require ('dotenv').config({path: __dirname +`/../env`});
 require ('config-json');
 
+
 //Accessing the environment variables to use to connect to mySQL database employment_managementDB
 let sequelize;
 if(process.env.JAWSDB_URL){
@@ -21,26 +22,8 @@ if(process.env.JAWSDB_URL){
 
 }
 
+
+console.log(sequelize);
+
 module.exports = sequelize;
-
-//const util = require("util");
-//const path = require("path");
-//require('dotenv').config({path: __dirname +`/../env`});
-//Creates the connection to the mysql database
-//const connection = mysql.createConnection({
-  //host: process.env.DB_HOST,
-  //user: process.env.DB_USER,
-  //password: process.env.DB_PASSWORD,
-  //database: process.env.DB_NAME,
-  //port : process.env.PORT
-//});
-//mySQL connection to check for error on connect
-//connection.connect((error) =>{
-  //if (error) throw error;
-   //console.error("error connecting: " + error.stack);
-  //console.log(`connected as id ${connection.threadId}\n`);
-
-  
-//});
-
 
