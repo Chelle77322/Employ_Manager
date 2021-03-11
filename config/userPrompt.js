@@ -63,24 +63,23 @@ valueChoice: async (valueName) => {
    const {valueChoice} = await inquirer.prompt(questions);
    return valueChoice;
     },
-    startMenu: () => {
-        const options = {
+    startMenu: async () => {
+        const options = await inquirer.prompt(choices); {
             choices: [
                 `View all records`,
                 `Create a new employee record`,
                 `Modify an existing record`,
                 `Deletes an existing record`,
                 `Finish`,
-            ],
+            ]
+            return promptUser.listReturn(options);
+            
         };
-        console.log(promptUser);
-        console.log(startMenu());
-       return promptUser.listReturn(options);
-    
+
     },
     
     menuCreate: () => {
-        const options ={
+        const options = {
             choices:[`Create an Employee`, `Create a Role`, `Create a Department`],
         };
         return promptUser.listReturn(options);

@@ -17,8 +17,6 @@ sequelize.sync({force: false}).then(()=>{
     app.listen(PORT, () => console.log('We are now connected and listening '));
 });
 
-
-
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
@@ -34,8 +32,8 @@ init();
   };
 
 //Gives the user a menu to choose from
-const startMenu = async () =>{
-const startMenuChoice = await promptUser.startMenu(); // Start Menu is not a function
+const startMenu = async() => {
+const startMenuChoice = promptUser.startMenu() // Start Menu is not a function
     switch (startMenuChoice){
           case `View all records`:
             menuView();
@@ -54,19 +52,21 @@ const startMenuChoice = await promptUser.startMenu(); // Start Menu is not a fun
             return;
             default:
             break;
+           
     };
-    startMenu();
+    startMenu(); 
+  
   };
   
-const menuDepartment = async () => {
-    const dep_id = await promptUser.valueChoice(
+  const menuDepartment = async () => {
+    const department_id = await promptUser.valueChoice(
         `the ID Number of the Department`
     );
     const viewDepartment = await orm.selectWhereAsync(
         `*`,
         `department`,
         `id`,
-        dep_id,
+        department_id,
         `id`
     );
     if (viewDepartment.length === 0){
