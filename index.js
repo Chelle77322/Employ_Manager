@@ -1,8 +1,8 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-//const mysql = require('mysql2');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
-//const path = require("path");
+const path = require("path");
 //Sequelize Connection information
 const express = require ('express');
 const sequelize = require('./config/connection.js');
@@ -25,16 +25,12 @@ app.use(express.urlencoded({ extended: true}));
         sequelize.close();
         startMenu();
       });
-
-
 init();
 //Loads the ascii logo 
  function init() {
    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'yellow', textColor: 'magenta' }).render();
     console.log(EMlogo);
 };
-
-
 //Gives the user a menu to choose an option from
 const startMenu = () => {
  return inquirer.prompt({
@@ -60,26 +56,21 @@ const startMenu = () => {
       ],
     
     }).then((answers) => {
-        console.log(answers); 
-    
-    switch (answers.takeAction){
-
-    //All viewing cases here
+  switch (answers.takeAction){
+//All viewing cases here
         case `Click to view all current employees`:
                 menuViewEmployees();
             break;
         case `Click to view all departments`:
                 menuViewDepartments();
             break;
-
         case `Click to view all roles`:
                 menuViewRoles();
             break;
         case `Click to view all employees by manager`:
                 menuViewByManager();
             break;
-            
-    //All creating records here
+//All creating records here
         case `Click to add a new employee`:
                 menuCreateEmployee();
             break;
@@ -100,40 +91,196 @@ const startMenu = () => {
     //All deletions to records in database here
         case `Click to remove an employee`:
             menuDeleteEmployee();
-        
-            break;
+          break;
         case `Click to remove a role`:
                 menuDeleteRole();
-               
             break;
         case `Click to remove a department`:
                     menuDeleteDepartment();
-                    
             break;
         case `Finish`:
             orm.endConnection();
+            console.log(orm.endConnection());
             return;
             default:
             break;
-                
-    };
+};
   });
- 
-}
-
-function menuViewEmployees(employee){
-  var queryallEmp = "SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id FROM employee;";
-  var query = Sequelize.query(queryallEmp, function (error, rows) {
-      if (error) {
-          console.log(error);
-      } else {
-          let employee = rows;
-          console.table("\n");
-          console.table(employee)
-          
-      }
-      startMenu();
+ }
+// view all employees in the database
+function menuViewEmployees() {
+  var query = 'SELECT * FROM employee';
+  sequelize.query(query, function(error, result) {
+      if (error) throw error;
+      console.log(result.length + ' employees found!');
+      console.table('All Employees:', result); 
+      options();
   })
-}
+};
+// view all departments in the database
+function menuViewDepartments() {
+  var query = 'SELECT * FROM department';
+  sequelize.query(query, function(error, result) {
+      if(error)throw error;
+      console.table('All Departments:', result);
+      options();
+  })
+};
+// view all roles in the database
+function menuViewRoles() {
+  var query = 'SELECT * FROM role';
+  sequelize.query(query, function(error, result){
+      if (error) throw error;
+      console.table('All Roles:', result);
+      options();
+  })
+};
+
+// add an employee to the database
+function menuCreateEmployee() {
+  sequelize.query('SELECT * FROM role', function (error, result) {
+      if (error) throw error;
+      inquirer
+          .prompt([
+              {
+                  name: 'first_name',
+                  type: 'input', 
+                  message: "What is the employee's first name? ",
+              },
+              {
+                  name: 'last_name',
+                  type: 'input', 
+                  message: "What is the employee's last name? "
+              },
+              {
+                  name: 'manager_id',
+                  type: 'input', 
+                  message: "What is the employee's manager's ID? "
+              },
+              {
+                  name: 'role', 
+                  type: 'list',
+                  choices: function() {
+                  var roleArray = [];
+                  for (let i = 0; i < result.length; i++) {
+                      roleArray.push(result[i].title);
+                  }
+                  return roleArray;
+                  },
+                  message: "What is this employee's role? "
+              }
+              ]).then(function (answer) {
+                  let role_id;
+                  for (let j = 0; j < result.length; j++) {
+                      if (result[a].title == answer.role) {
+                          role_id = result[j].id;
+                          console.log(role_id)
+                      }                  
+                  }  
+                  sequelize.query(
+                  'INSERT INTO employee SET ?',
+                  {
+                      first_name: answer.first_name,
+                      last_name: answer.last_name,
+                      manager_id: answer.manager_id,
+                      role_id: role_id,
+                  },
+                  function (error) {
+                      if (error) throw error;
+                      console.log('Your employee has been added!');
+                      options();
+                  })
+              })
+           })
+};
+// add a department to the database
+function menuCreateDepartment() {
+  inquirer.prompt([
+          {
+              name: 'newDepartment', 
+              type: 'input', 
+              message: 'Which department would you like to add?'
+          }
+          ]).then(function (answer) {
+              sequelize.query(
+                  'INSERT INTO department SET ?',
+                  {
+                      name: answer.newDepartment
+                  });
+              var query = 'SELECT * FROM department';
+              sequelize.query(query, function(error, result) {
+              if(error)throw error;
+              console.log('Your department has been added!');
+              console.table('All Departments:', result);
+              options();
+              })
+          })
+};
+// add a role to the database
+function menuCreateRole() {
+  sequelize.query('SELECT * FROM department', function(error, result) {
+      if (error) throw error;
+  
+      inquirer 
+      .prompt([
+          {
+              name: 'new_role',
+              type: 'input', 
+              message: "What new role would you like to add?"
+          },
+          {
+              name: 'salary',
+              type: 'input',
+              message: 'What is the salary of this role? (Enter a number)'
+          },
+          {
+              name: 'Department',
+              type: 'list',
+              choices: function() {
+                  var deptArry = [];
+                  for (let i = 0; i < result.length; i++) {
+                  deptArry.push(result[i].name);
+                  }
+                  return deptArry;
+              },
+          }
+      ]).then(function (answer) {
+          let department_id;
+          for (let a = 0; a < result.length; a++) {
+              if (result[a].name == answer.Department) {
+                  department_id = result[a].id;
+              }
+          }
+  
+          sequelize.query(
+              'INSERT INTO role SET ?',
+              {
+                  title: answer.new_role,
+                  salary: answer.salary,
+                  department_id: department_id
+              },
+              function (error, result) {
+                  if(error)throw error;
+                  console.log('Your new role has been added!');
+                  console.table('All Roles:', result);
+                  options();
+              })
+      })
+  })
+};
+
+// update a role in the database
+function updateRole() {
+
+};
+
+//  delete an employee
+function  menuDeleteEmployee() {
+
+};
+//View by manger
+function menuViewByManager(){};
+
+
 
 
