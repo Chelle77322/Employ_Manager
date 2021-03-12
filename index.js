@@ -1,6 +1,10 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
 const inquirer = require('inquirer');
+let role;
+let employee;
+let deparment;
+let manager;
 
 //Sequelize Connection information
 const express = require ('express');
