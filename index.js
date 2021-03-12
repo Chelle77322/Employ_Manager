@@ -123,8 +123,15 @@ const startMenu = () => {
 
 // view all employees in the database
  const menuViewEmployees =async () => {
-  d
-}
+  const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name
+      FROM employee
+      INNER JOIN role on role.id = employee.role_id
+      INNER JOIN department on department.id = role.deparment_id;`
+  
+      const employeeTable = new querySQL(query);
+      employeeTable.standard_tableQuery(startMenu);
+  };
+
 // view all departments in the database
 function menuViewDepartments() {
   var query = 'SELECT * FROM department';
