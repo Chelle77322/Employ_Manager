@@ -59,44 +59,55 @@ const startMenu = () => {
   switch (answers.takeAction){
 //All viewing cases here
         case `Click to view all current employees`:
-                menuViewEmployees();
+               // menuViewEmployees();
+               console.log(`${answers.takeAction}`);
             break;
         case `Click to view all departments`:
-                menuViewDepartments();
+               // menuViewDepartments();
+               console.log(`${answers.takeAction}`);
             break;
         case `Click to view all roles`:
-                menuViewRoles();
+                //menuViewRoles();
+                console.log(`${answers.takeAction}`);
             break;
         case `Click to view all employees by manager`:
-                menuViewByManager();
+                //menuViewByManager();
+                console.log(`${answers.takeAction}`);
             break;
 //All creating records here
         case `Click to add a new employee`:
-                menuCreateEmployee();
+                //menuCreateEmployee();
+                console.log(`${answers.takeAction}`);
             break;
-
         case `Click to add a new department`:
-                menuCreateDepartment();
+                //menuCreateDepartment();
+                console.log(`${answers.takeAction}`);
             break;
         case `Click to add a new role`:
                 menuCreateRole();
+                console.log(`${answers.takeAction}`);
             break;
     //All modifications to records are met here
         case `Click to modify an employees manager`:
             menuModifyEmployeeManager();
+            console.log(`${answers.takeAction}`);
             break;
         case `Click to update an employees role`:
             menuUpdateEmployeeRole();
+            console.log(`${answers.takeAction}`);
             break;
     //All deletions to records in database here
         case `Click to remove an employee`:
             menuDeleteEmployee();
+            console.log(`${answers.takeAction}`);
           break;
         case `Click to remove a role`:
                 menuDeleteRole();
+                console.log(`${answers.takeAction}`);
             break;
         case `Click to remove a department`:
                     menuDeleteDepartment();
+                    console.log(`${answers.takeAction}`);
             break;
         case `Finish`:
             orm.endConnection();
@@ -105,8 +116,9 @@ const startMenu = () => {
             default:
             break;
 };
-  });
- }
+});
+};
+
 // view all employees in the database
 function menuViewEmployees() {
   var query = 'SELECT * FROM employee';
@@ -280,7 +292,5 @@ function  menuDeleteEmployee() {
 };
 //View by manger
 function menuViewByManager(){};
-
-
 
 
