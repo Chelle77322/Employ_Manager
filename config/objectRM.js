@@ -2,7 +2,7 @@ const connection = require('./connection');
 const orm = {
     endConnection: () => {
         connection.end ();
-
+console.log(connection);
     },
 //Select columns from any table in the employment_managementDB
 selectAsync: (tableColumn, tableName, sortColumn)=> {
@@ -37,10 +37,10 @@ selectWhereAsync: (tableColumn, tableName, columnName, columnValue, sortColumn) 
 
 },
 //Displays employee count for a department
-selectDepartment: (department_id) => {
+selectDepartment: (id) => {
     return new Promise ((resolve, reject)=>{
-        const queryString = "SELECT department.id, sum(salary) AS salary COUNT (employee.id) as employees, department.name AS department name from employee JOIN role ON employee.role_id = role.id JOIN department on role.department_id = department.id WHERE department.id = ?";
-        connection.query(queryString, [dep_id], (error, result)=> {
+        const queryString = 
+        connection.query(queryString, [id], (error, result)=> {
             if (error) reject (error);
             resolve(result);
             console.log(connection);

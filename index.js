@@ -1,8 +1,8 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-const mysql = require('mysql2');
+//const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const path = require("path");
+//const path = require("path");
 //Sequelize Connection information
 const express = require ('express');
 const sequelize = require('./config/connection.js');
@@ -13,7 +13,6 @@ const PORT = process.env.PORT
 const orm = require("./config/objectRM.js");
 const promptUser = require("./config/userPrompt.js");
 const table = require('console.table');
-const { Sequelize } = require('sequelize');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
@@ -26,7 +25,7 @@ app.use(express.urlencoded({ extended: true}));
         sequelize.close();
         startMenu();
       });
-     
+
 
 init();
 //Loads the ascii logo 
@@ -64,6 +63,7 @@ const startMenu = () => {
         console.log(answers); 
     
     switch (answers.takeAction){
+
     //All viewing cases here
         case `Click to view all current employees`:
                 menuViewEmployees();
@@ -117,10 +117,10 @@ const startMenu = () => {
             break;
                 
     };
-    
-});
+  });
  
 }
+
 function menuViewEmployees(employee){
   var queryallEmp = "SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id FROM employee;";
   var query = Sequelize.query(queryallEmp, function (error, rows) {
@@ -135,4 +135,5 @@ function menuViewEmployees(employee){
       startMenu();
   })
 }
+
 
