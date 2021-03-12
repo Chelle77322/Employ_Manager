@@ -1,18 +1,14 @@
 //Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const path = require("path");
+
 //Sequelize Connection information
 const express = require ('express');
 const sequelize = require('./config/connection.js');
 const app = express();
-const PORT = process.env.PORT
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
-const promptUser = require("./config/userPrompt.js");
-const table = require('console.table');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
