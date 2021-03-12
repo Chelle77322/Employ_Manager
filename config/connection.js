@@ -1,4 +1,3 @@
-const path = 'mysql: //admin:admin@localhost:3306/employment_managementDB';
 const Sequelize = require('sequelize');
 require ('dotenv').config({path: __dirname +`/../env`});
 require ('config-json');

@@ -13,6 +13,8 @@ const app = express();
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
+const query = require("./lib/querySQL");
+console.log(query);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
@@ -59,7 +61,7 @@ const startMenu = () => {
   switch (answers.takeAction){
 //All viewing cases here
         case `Click to view all current employees`:
-               // menuViewEmployees();
+               menuViewEmployees();
                console.log(`${answers.takeAction}`);
             break;
         case `Click to view all departments`:
@@ -120,15 +122,9 @@ const startMenu = () => {
 };
 
 // view all employees in the database
-function menuViewEmployees() {
-  var query = 'SELECT * FROM employee';
-  sequelize.query(query, function(error, result) {
-      if (error) throw error;
-      console.log(result.length + ' employees found!');
-      console.table('All Employees:', result); 
-      options();
-  })
-};
+ const menuViewEmployees =async () => {
+  d
+}
 // view all departments in the database
 function menuViewDepartments() {
   var query = 'SELECT * FROM department';
