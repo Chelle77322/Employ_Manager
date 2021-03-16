@@ -10,6 +10,7 @@ let manager;
 const express = require ('express');
 const sequelize = require('./config/connection.js');
 const app = express();
+console.log(sequelize);
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
@@ -19,7 +20,7 @@ console.log(query);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
-    sequelize.authenticate().then(() => {
+    sequelize.sync({force: false}).then(() => {
         console.log('Connection established successfully.');
       }).catch(error => {
         console.error('Unable to connect to the database:', error);
