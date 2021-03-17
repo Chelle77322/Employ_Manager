@@ -1,17 +1,17 @@
-const departments = require('./department_seed');
-const employees = require ('./employee_seed');
-const roles = require('./roles_seed');
+const seedDepartments = require('./department_seed');
+const seedEmployees = require ('./employee_seed');
+const seedRoles = require('./roles_seed');
 
 const sequelize = require('../config/connection');
 
 const seedAll = async () => {
     await sequelize.sync ({ force: true});
     console.log ('\n --- DATABASE SYNCED ---- \n');
-    await departments();
+    await seedDepartments();
     console.log ('\n--- DEPARTMENTS SEEDED ---\n');
-    await employees ();
+    await seedEmployees ();
     console.log('\n --- EMPLOYEES SEEDED --- \n');
-    await roles();
+    await seedRoles();
     console.log('\n ---ROLES SEEDED --- \n');
     process.exit(0);
 };
