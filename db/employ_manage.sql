@@ -1,7 +1,6 @@
-DROP DATABASE IF EXISTS employment_managementDB;
-CREATE DATABASE employment_managementDB;
 
-USE employment_managementDB;
+
+
 -- Creating the department table with an auto incrementing id field--
 CREATE TABLE department
 (
