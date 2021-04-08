@@ -68,22 +68,19 @@ const startMenu = () => {
         "Click to update an employees role",
         "Click to modify an employees manager",
         "Click to finish",
-      ],
-  
+      ], 
  });
- startMenu();    
-      buildManagersArray();
-
-buildRolesArray();
-buildDepartmentsArray();
-buildEmployeesIDArray();
-buildEmployeesFirstNameArray();
-buildManagersIDArray();
-buildRolesIDArray();
 
 //* This starts the entire mysql command line app
 function startMenu() {
-    
+    buildManagersArray();
+    buildRolesArray();
+    buildDepartmentsArray();
+    buildEmployeesIDArray();
+    buildEmployeesFirstNameArray();
+    buildManagersIDArray();
+    buildRolesIDArray();
+
 }
 
     //}).then((answers) => {
