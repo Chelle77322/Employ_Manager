@@ -4,6 +4,6 @@ const employeeData = [
        first_name: 'Michelle' ,
     },
     {
-        last_name: 
+        last_name:  'Hall',
     }
 ]
