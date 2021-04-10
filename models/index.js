@@ -19,7 +19,7 @@ employees.belongsTo(employees,
     {
         foreignKey: 'manager_id',
     });
-modules.exports = {
+module.exports = {
 departments,
 employees,
 roles

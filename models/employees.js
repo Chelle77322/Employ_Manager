@@ -3,8 +3,7 @@ const sequelize = require('../config/connection');
 
 class employees extends Model {}
 employees.init( {
-    attributes:[{
-
+   
 	id:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -31,8 +30,8 @@ employees.init( {
         type: DataTypes.INTEGER,
        
     }
-}
-],
+},
+{
 
     sequelize,
     timestamps: false,
