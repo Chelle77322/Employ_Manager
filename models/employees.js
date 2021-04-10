@@ -25,14 +25,20 @@ employees.init( {
     {
         type: DataTypes.INTEGER,
         references: 
-        {model: 'departments', key: 'id',},
+        {model: 'role', key: 'id',},
     },
     manager_id:{
         type: DataTypes.INTEGER,
        
     }
 }
-]
+],
+
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'employees',
 }    
 
 );

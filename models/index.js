@@ -1,6 +1,6 @@
 //import models
 const departments = require('./departments');
-const employees = require ('./employee');
+const employees = require ('./employees');
 const roles = require('./roles');
 
 //Department ID belongsTo Roles Table
