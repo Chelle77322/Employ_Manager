@@ -1,4 +1,4 @@
-const seedDepartments = require('./department_seed');
+const seedDepartments = require('./departments_seed');
 const seedEmployees = require ('./employee_seed');
 const seedRoles = require('./roles_seed');
 

@@ -1,9 +1,9 @@
 const  {Model, DataTypes} = require ('sequelize');
 const sequelize = require ('../config/connection');
 
-class department extends Model {}
+class departments extends Model {}
 
-department.init({
+departments.init({
     //defines the columns for the department table
     id: {
         type: DataTypes.INTEGER,
@@ -11,7 +11,7 @@ department.init({
         primaryKey: true,
         autoIncrement:true
     },
-    department_name: {
+    departments_name: {
         type: DataTypes.STRING,
         allowNull: false
     }
