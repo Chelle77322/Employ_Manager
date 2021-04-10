@@ -19,12 +19,7 @@ roles.init({
         type:DataTypes.DECIMAL,
         allowNull: false
     },
-    department_id: 
-    {
-        type: DataTypes.INTEGER,
-        references: 
-        {model: 'departments', key: 'id',},
-    },
+
 
 },
 {

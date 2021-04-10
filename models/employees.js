@@ -20,14 +20,15 @@ employees.init( {
         varchar:(30),
         allowNull: false
     },
-    role_id: 
+    roles_id: 
     {
         type: DataTypes.INTEGER,
         references: 
-        {model: 'role', key: 'id',},
+        {model: 'roles', key: 'id',},
     },
     manager_id:{
         type: DataTypes.INTEGER,
+        references: {model:'employees', key: 'id'}
        
     }
 },

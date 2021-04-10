@@ -1,13 +1,13 @@
 USE employment_managementDB;
 --Populating data into the department table--
 --Inserting information into the department table
-INSERT INTO department (name)
+INSERT INTO departments (name)
 VALUES
   ("Web Design"),
   ("Software Engineering"),
   ("Accounting"),
   ("Human Resources");
-INSERT INTO role (title, salary, department_id)
+INSERT INTO roles (title, salary, departments_id)
 VALUES
   ("Receptionist", 50000.00, 1),
   ("Office Worker", 45000.00, 1),
@@ -16,7 +16,7 @@ VALUES
   ("Payroll Clerk", 60000.00, 3),
   ("Accounts Manager", 75000.00, 3),
   ("Content Advisor", 82000.00,4);
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, roles_id, manager_id)
 VALUES
   ("Sarina", "Gauci", 1),
   ("Saoirse", "Hall", 2,2),

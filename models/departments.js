@@ -14,7 +14,15 @@ departments.init({
     departments_name: {
         type: DataTypes.STRING,
         allowNull: false
-    }
+    },
+        roles_id: 
+    {
+        type: DataTypes.INTEGER,
+        references: 
+        {model: 'roles', key: 'id',},
+    },
+
+    
 },
 {
     sequelize,

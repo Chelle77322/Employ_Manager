@@ -37,7 +37,7 @@ selectWhereAsync: (tableColumn, tableName, columnName, columnValue, sortColumn) 
 
 },
 //Displays employee count for a department
-selectDepartment: (id) => {
+selectDepartments: (id) => {
     return new Promise ((resolve, reject)=>{
         const queryString = 
         connection.query(queryString, [id], (error, result)=> {

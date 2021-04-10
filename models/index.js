@@ -22,5 +22,5 @@ employees.belongsTo(employees,
 module.exports = {
 departments,
 employees,
-roles
+roles,
 }
