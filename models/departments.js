@@ -20,6 +20,7 @@ departments.init({
         type: DataTypes.INTEGER,
         references: 
         {model: 'roles', key: 'id',},
+        
     },
 
     

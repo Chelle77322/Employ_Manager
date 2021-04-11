@@ -4,23 +4,24 @@ const sequelize = require ('../config/connection');
 class roles extends Model {}
 
 roles.init({
-    //defines the columns for the department table
+    //defines the columns for the departments table
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
-        autoIncrement:true
+        autoIncrement:true,
+       
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+       
     },
     salary: {
         type:DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: false,
+       
     },
-
-
 },
 {
     sequelize,

@@ -26,4 +26,4 @@ CREATE TABLE employees (
   manager_id int,
   PRIMARY KEY (id)
 );
-SELECT * FROM employement_managementDB;
+SELECT * FROM employment_managementDB;

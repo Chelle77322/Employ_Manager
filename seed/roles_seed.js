@@ -1,4 +1,5 @@
 const {roles} = require('../models');
+const { bulkCreate } = require('../models/employees');
 const rolesData = [
     {
     roles_name: 'Payroll Administrator',

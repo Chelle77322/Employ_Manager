@@ -11,7 +11,7 @@ const departmentData = [
     departments_name: 'Engineering',
 },
 {
-    department_name: 'Marketing',
+    departments_name: 'Marketing',
 },
 ];
 const seedDepartments = () => departments.bulkCreate(departmentData);
