@@ -1,8 +1,8 @@
 //* Constructor for department
-class Departments {
+class departments {
 	constructor(name) {
 		this.name = name;
 	}
 }
 
-module.exports = Departments;
+module.exports = departments;

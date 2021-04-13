@@ -1,5 +1,5 @@
 const {departments} = require('../models');
-const departmentData = [
+const departmentsData = [
     {
     departments_name: 'Human Resources',
 },
@@ -14,5 +14,5 @@ const departmentData = [
     departments_name: 'Marketing',
 },
 ];
-const seedDepartments = () => departments.bulkCreate(departmentData);
+const seedDepartments = () => departments.bulkCreate(departmentsData);
 module.exports = seedDepartments;

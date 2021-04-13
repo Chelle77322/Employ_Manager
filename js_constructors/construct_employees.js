@@ -1,11 +1,11 @@
 //* Constructor for employee
-class Employees {
-	constructor(first_name, last_name, role_id, manager_id) {
+class employees {
+	constructor(first_name, last_name, roles_id, manager_id) {
 		this.first_name = first_name;
 		this.last_name = last_name;
-		this.role_id = role_id;
+		this.roles_id = roles_id;
 		this.manager_id = manager_id;
 	}
 }
 
-module.exports = Employees;
+module.exports = employees;

@@ -7,7 +7,7 @@ console.log(connection);
 //Select columns from any table in the employment_managementDB
 selectAsync: (tableColumn, tableName, sortColumn)=> {
     return new Promise((resolve, reject) =>{
-        const queryString = "SELECT ?? FROM ?? ORDER BY ??";
+        const queryString = "SELECT * FROM employees ORDER BY id";
         connection.query(
             queryString,
             [tableColumn, tableName, sortColumn],
