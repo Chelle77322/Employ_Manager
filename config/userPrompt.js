@@ -1,5 +1,5 @@
 async function menuViewDepartments(){
-    const departmentData = await orm.selectDepartment(department.id);
+    const departmentData = await orm.selectDepartment(departments.id);
     console.table(departmentData);
     return startMenu();
    
