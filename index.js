@@ -1,22 +1,23 @@
 //*Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-const inquirer = require('inquirer');
+const {prompt} = require('inquirer');
+
 const mysql = require('mysql');
 const userPrompt = require('./config/userPrompt');
 
 //Calling all Constructor Classes here
-const deparments = require('./js_constructors/construct_departments');
+const departments = require('./js_constructors/construct_departments');
 const employees = require ('./js_constructors/construct_employees');
 const roles = require('./js_constructors/construct_roles');
 
 //Defining all arrays needed later on
-let managerArray = [];
-let roleArray = [];
-let departmentArray = [];
-let employeesIDArray = [];
-let employeesFirstNameArray = [];
-let managerIDArray = [];
-let rolesIDArray = [];
+//let managerArray = [];
+//let roleArray = [];
+//let departmentArray = [];
+//let employeesIDArray = [];
+//let employeesFirstNameArray = [];
+//let managerIDArray = [];
+//let rolesIDArray = [];
 
 
 //Sequelize Connection information
@@ -47,276 +48,442 @@ init();
    const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderColor: 'yellow', textColor: 'magenta' }).render();
     console.log(EMlogo);
 };
-//Gives the user a menu to choose an option from
-const startMenu = () => {
- return inquirer.prompt({
-     name: "takeAction",
-     type: "list",
-     message: "Please make a selection from the list below:",
-     choices:
-     [
-        "Click to view all current employees",
-        "Click to view all departments",
-        "Click to view all roles",
-        "Click to add a new employee",
-        "Click to add a new department",
-        "Click to add a new role",
-        "Click to remove an employee",
-        "Click to remove a role",
-        "Click to remove a department",
-        "Click to view total company wage",
-        "Click to view all employees by manager",
-        "Click to update an employees role",
-        "Click to modify an employees manager",
-        "Click to finish",
-      ], 
- });
+async function startMenu() {
+  const { choice } = await prompt([
+    {
+      type: "list",
+      name: "choice",
+      message: "What would you like to do?",
+      choices: [
+        {
+          name: "View All Employees",
+          value: "VIEW_EMPLOYEES"
+        },
+        {
+          name: "View All Employees By Department",
+          value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
+        },
+        {
+          name: "View All Employees By Manager",
+          value: "VIEW_EMPLOYEES_BY_MANAGER"
+        },
+        {
+          name: "Add Employee",
+          value: "ADD_EMPLOYEE"
+        },
+        {
+          name: "Remove Employee",
+          value: "REMOVE_EMPLOYEE"
+        },
+        {
+          name: "Update Employee Role",
+          value: "UPDATE_EMPLOYEE_ROLE"
+        },
+        {
+          name: "Update Employee Manager",
+          value: "UPDATE_EMPLOYEE_MANAGER"
+        },
+        {
+          name: "View All Roles",
+          value: "VIEW_ROLES"
+        },
+        {
+          name: "Add Role",
+          value: "ADD_ROLE"
+        },
+        {
+          name: "Remove Role",
+          value: "REMOVE_ROLE"
+        },
+        {
+          name: "View All Departments",
+          value: "VIEW_DEPARTMENTS"
+        },
+        {
+          name: "Add Department",
+          value: "ADD_DEPARTMENT"
+        },
+        {
+          name: "Remove Department",
+          value: "REMOVE_DEPARTMENT"
+        },
+        {
+          name: "Quit",
+          value: "QUIT"
+        }
+      ]
+    }
+  ]);
 
-//* This starts the entire mysql command line app
-function startMenu() {
-    buildManagersArray();
-    buildRolesArray();
-    buildDepartmentsArray();
-    buildEmployeesIDArray();
-    buildEmployeesFirstNameArray();
-    buildManagersIDArray();
-    buildRolesIDArray();
-
+  // Call the appropriate function depending on what the user chose
+  switch (choice) {
+    case "VIEW_EMPLOYEES":
+      return viewEmployees();
+    case "VIEW_EMPLOYEES_BY_DEPARTMENT":
+      return viewEmployeesByDepartment();
+    case "VIEW_EMPLOYEES_BY_MANAGER":
+      return viewEmployeesByManager();
+    case "ADD_EMPLOYEE":
+      return addEmployee();
+    case "REMOVE_EMPLOYEE":
+      return removeEmployee();
+    case "UPDATE_EMPLOYEE_ROLE":
+      return updateEmployeeRole();
+    case "UPDATE_EMPLOYEE_MANAGER":
+      return updateEmployeeManager();
+    case "VIEW_DEPARTMENTS":
+      return viewDepartments();
+    case "ADD_DEPARTMENT":
+      return addDepartment();
+    case "REMOVE_DEPARTMENT":
+      return removeDepartment();
+    case "VIEW_ROLES":
+      return viewRoles();
+    case "ADD_ROLE":
+      return addRole();
+    case "REMOVE_ROLE":
+      return removeRole();
+    default:
+      return quit();
+  }
 }
 
-    //}).then((answers) => {
-  switch (answers.takeAction){
-//All viewing cases here
-       case `Click to view all current employees`:
-              menuViewEmployees();
-             console.log(`${answers.takeAction}`)//;
-           break;
-       case `Click to view all departments`:
-                menuViewDepartments();
-            console.log(`${answers.takeAction}`);
-         break;
-      case `Click to view all roles`:
-        menuViewRoles();
-            console.log(`${answers.takeAction}`);
-           break;
-        case `Click to view all employees by manager`:
-                menuViewByManager();
-              console.log(`${answers.takeAction}`);
-           break;
-//All creating records here
-      case `Click to add a new employee`:
-            menuCreateEmployee();
-           console.log(`${answers.takeAction}`);
-            break;
-      case `Click to add a new department`:
-                menuCreateDepartment();
-               console.log(`${answers.takeAction}`);
-            break;
-        case `Click to add a new role`:
-                menuCreateRole();
-               console.log(`${answers.takeAction}`);
-            break;
-    //All modifications to records are met here
-        case `Click to modify an employees manager`:
-           menuModifyEmployeeManager();
-           console.log(`${answers.takeAction}`);
-            break;
-        case `Click to update an employees role`:
-            menuUpdateEmployeeRole();
-           console.log(`${answers.takeAction}`);
-            break;
-    //All deletions to records in database here
-        case `Click to remove an employee`:
-            menuDeleteEmployee();
-            console.log(`${answers.takeAction}`);
-          break;
-        case `Click to remove a role`:
-               menuDeleteRole();
-                console.log(`${answers.takeAction}`);
-           break;
-      case `Click to remove a department`:
-                   menuDeleteDepartment();
-                    console.log(`${answers.takeAction}`);
-           break;
-        case `Finish`:
-           orm.endConnection();
-           console.log(orm.endConnection());
-            return;
-            default:
-            break;
-};
+async function viewEmployees() {
+  const employees = await mysql.findAllEmployees();
 
+  console.log("\n");
+  console.table(employees);
 
-// view all employees in the database
- const menuViewEmployees =async () => {
-  const query = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name
-     FROM employee
-      INNER JOIN roles on roles.id = employees.role_id
-      INNER JOIN departments on departments.id = roles.deparments_id;`
-  
-      const employeeTable = new querySQL(query);
-      employeeTable.standard_tableQuery(startMenu);
-  };
+  startMenu();
+}
 
-// view all departments in the database
-function menuViewDepartments() {
-  var query = 'SELECT * FROM departments';
-  sequelize.query(query, function(error, result) {
-      if(error)throw error;
-      console.table('All Departments:', result);
-      options();
-  })
-};
-// view all roles in the database
-function menuViewRoles() {
-  var query = 'SELECT * FROM roles';
-  sequelize.query(query, function(error, result){
-   if (error) throw error;
-      console.table('All Roles:', result);
-      options();
-  })
-};
+async function viewEmployeesByDepartment() {
+  const departments = await mysql.findAllDepartments();
 
-// add an employee to the database
-function menuCreateEmployee() {
-  sequelize.query('SELECT * FROM roles', function (error, result) {
-     if (error) throw error;
-      inquirer.prompt([
-            {
-                name: 'first_name',
-                type: 'input', 
-                  message: "What is the employee's first name? ",
-              },
-              {
-                 name: 'last_name',
-                type: 'input', 
-                 message: "What is the employee's last name? "
-             },
-             {
-                 name: 'manager_id',
-                 type: 'input', 
-                 message: "What is the employee's manager's ID? "
-             },
-             {
-                 name: 'role', 
-                 type: 'list',
-                choices: function() {
-                 var roleArray = [];
-                 for (let i = 0; i < result.length; i++) {
-                      roleArray.push(result[i].title);
-                  }
-                 return roleArray;
-                },
-                 message: "What is this employee's role? "
-              }
-             ]).then(function (answer) {
-                 let roles_id;
-              for (let j = 0; j < result.length; j++) {
-                   if (result[a].title == answer.roles) {
-                         roles_id = result[j].id;
-                       console.log(roles_id)
-                    }                  
-                 }  
-                 sequelize.query(
-               'INSERT INTO employees SET ?',
-                 {
-                     first_name: answer.first_name,
-                      last_name: answer.last_name,
-                      manager_id: answer.manager_id,
-                      roles_id: roles_id,
-                  },
-                  function (error) {
-                      if (error) throw error;
-                      console.log('Your employee has been added!');
-                      options();
-                  })
-              })
-          })
-};
-// Add a department to the database
-function menuCreateDepartment() {
-  inquirer.prompt([
-         {
-              name: 'newDepartment', 
-              type: 'input', 
-              message: 'Which department would you like to add?'
-          }
-          ]).then(function (answer) {
-              sequelize.query(
-                  'INSERT INTO department SET ?',
-                  {
-                      name: answer.newDepartment
-                  });
-              var query = 'SELECT * FROM departments';
-              sequelize.query(query, function(error, result) {
-             if(error)throw error;
-              console.log('Your department has been added!');
-              console.table('All Departments:', result);
-              options();
-              })
-          })
-};
-// Add a role to the database
-function menuCreateRole() {
-  sequelize.query('SELECT * FROM departments', function(error, result) {
-    if (error) throw error;
-    inquirer.prompt([
-         {
-              name: 'new_role',
-              type: 'input', 
-              message: "What new role would you like to add?"
-          },
-          {
-              name: 'salary',
-              type: 'input',
-              message: 'What is the salary of this role? (Enter a number)'
-          },
-          {
-              name: 'department',
-              type: 'list',
-              choices: function() {
-              var deptArray = [];
-                  for (let i = 0; i < result.length; i++) {
-                 deptArray.push(result[i].name);
-                 }
-                  return deptArray;
-              },
-          }
-      ]).then(function (answer) {
-         let departments_id;
-          for (let a = 0; a < result.length; a++) {
-              if (result[a].name == answer.departments) {
-                 departments_id = result[a].id;
-              }
-          }
-  
-          sequelize.query(
-              'INSERT INTO roles SET ?',
-              {
-                 title: answer.new_roles,
-                  salary: answer.salary,
-                  departments_id: departments_id
-              },
-              function (error, result) {
-                  if(error)throw error;
-                  console.log('Your new role has been added!');
-                  console.table('All Roles:', result);
-                  options();
-              })
-      })
-  })
-};
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name,
+    value: id
+  }));
 
-// update a role in the database
-//function updateRole() {
+  const { departments_id } = await prompt([
+    {
+      type: "list",
+      name: "department_id",
+      message: "Which department would you like to see employees for?",
+      choices: departmentChoices
+    }
+  ]);
 
-//};
+  const employees = await db.findAllEmployeesByDepartment(departments_id);
 
-//  delete an employee
-//function  menuDeleteEmployee() {
+  console.log("\n");
+  console.table(employees);
 
-//};
-//View by manger
-//function menuViewByManager(){};
+  startMenu();
+}
 
+async function viewEmployeesByManager() {
+  const managers = await mysql.findAllEmployees();
+
+  const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+
+  const { manager_id } = await prompt([
+    {
+      type: "list",
+      name: "manager_id",
+      message: "Which employee do you want to see direct reports for?",
+      choices: managerChoices
+    }
+  ]);
+
+  const employees = await mysql.findAllEmployeesByManager(manager_id);
+
+  console.log("\n");
+
+  if (employees.length === 0) {
+    console.log("The selected employee has no direct reports");
+  } else {
+    console.table(employees);
+  }
+
+  startMenu();
+}
+
+async function removeEmployee() {
+  const employees = await mysql.findAllEmployees();
+
+  const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+
+  const { employees_id } = await prompt([
+    {
+      type: "list",
+      name: "employees_id",
+      message: "Which employee do you want to remove?",
+      choices: employeeChoices
+    }
+  ]);
+
+  await db.removeEmployee(employees_id);
+
+  console.log("Removed employee from the database");
+
+  startMenu();
+}
+
+async function updateEmployeeRole() {
+  const employees = await mysql.findAllEmployees();
+
+  const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+
+  const { employees_id } = await prompt([
+    {
+      type: "list",
+      name: "employees_id",
+      message: "Which employee's role do you want to update?",
+      choices: employeeChoices
+    }
+  ]);
+
+  const roles = await mysql.findAllRoles();
+
+  const roleChoices = roles.map(({ id, title }) => ({
+    name: title,
+    value: id
+  }));
+
+  const { roles_id } = await prompt([
+    {
+      type: "list",
+      name: "roles_id",
+      message: "Which role do you want to assign the selected employee?",
+      choices: roleChoices
+    }
+  ]);
+
+  await mysql.updateEmployeeRole(employees_id, roles_id);
+
+  console.log("Updated employee's role");
+
+  startMenu();
+}
+
+async function updateEmployeeManager() {
+  const employees = await mysql.findAllEmployees();
+
+  const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+
+  const { employees_id } = await prompt([
+    {
+      type: "list",
+      name: "employees_id",
+      message: "Which employee's manager do you want to update?",
+      choices: employeeChoices
+    }
+  ]);
+
+  const managers = await mysql.findAllPossibleManagers(employees_id);
+
+  const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+
+  const { manager_id } = await prompt([
+    {
+      type: "list",
+      name: "manager_id",
+      message:
+        "Which employee do you want to set as manager for the selected employee?",
+      choices: managerChoices
+    }
+  ]);
+
+  await db.updateEmployeeManager(employee_id, manager_id);
+
+  console.log("Updated employee's manager");
+
+  startMenu();
+}
+
+async function viewRoles() {
+  const roles = await db.findAllRoles();
+
+  console.log("\n");
+  console.table(roles);
+
+  startMenu();
+}
+
+async function addRole() {
+  const departments = await mysql.findAllDepartments();
+
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name,
+    value: id
+  }));
+
+  const roles = await prompt([
+    {
+      name: "title",
+      message: "What is the name of the role?"
+    },
+    {
+      name: "salary",
+      message: "What is the salary of the role?"
+    },
+    {
+      type: "list",
+      name: "departments_id",
+      message: "Which department does the role belong to?",
+      choices: departmentChoices
+    }
+  ]);
+
+  await mysql.createRole(roles);
+
+  console.log(`Added ${roles.title} to the database`);
+
+  startMenu();
+}
+
+async function removeRole() {
+  const roles = await mysql.findAllRoles();
+
+  const roleChoices = roles.map(({ id, title }) => ({
+    name: title,
+    value: id
+  }));
+
+  const { roles_id } = await prompt([
+    {
+      type: "list",
+      name: "roles_id",
+      message:
+        "Which role do you want to remove? (Warning: This will also remove employees)",
+      choices: roleChoices
+    }
+  ]);
+
+  await mysql.removeRole(roles_id);
+
+  console.log("Removed role from the database");
+
+  startMenu();
+}
+
+async function viewDepartments() {
+  const departments = await mysql.findAllDepartments();
+
+  console.log("\n");
+  console.table(departments);
+
+  startMenu();
+}
+
+async function addDepartment() {
+  const departments = await prompt([
+    {
+      name: "name",
+      message: "What is the name of the department?"
+    }
+  ]);
+
+  await mysql.createDepartment(departments);
+
+  console.log(`Added ${departments.name} to the database`);
+
+  startMenu();
+}
+
+async function removeDepartment() {
+  const departments = await mysql.findAllDepartments();
+
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name,
+    value: id
+  }));
+
+  const { departments_id } = await prompt({
+    type: "list",
+    name: "departments_id",
+    message:
+      "Which department would you like to remove? (Warning: This will also remove associated roles and employees)",
+    choices: departmentChoices
+  });
+
+  await mysql.removeDepartment(departments_id);
+
+  console.log(`Removed department from the database`);
+
+startMenu();
+}
+
+async function addEmployee() {
+  const roles = await mysql.findAllRoles();
+  const employees = await mysql.findAllEmployees();
+
+  employees = await prompt([
+    {
+      name: "first_name",
+      message: "What is the employee's first name?"
+    },
+    {
+      name: "last_name",
+      message: "What is the employee's last name?"
+    }
+  ]);
+
+  const roleChoices = roles.map(({ id, title }) => ({
+    name: title,
+    value: id
+  }));
+
+  const { roles_id } = await prompt({
+    type: "list",
+    name: "roles_id",
+    message: "What is the employee's role?",
+    choices: roleChoices
+  });
+
+  employees.roles_id = roles_id;
+
+  const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+    name: `${first_name} ${last_name}`,
+    value: id
+  }));
+  managerChoices.unshift({ name: "None", value: null });
+
+  const { manager_id } = await prompt({
+    type: "list",
+    name: "manager_id",
+    message: "Who is the employee's manager?",
+    choices: managerChoices
+  });
+
+  employees.manager_id = manager_id;
+
+  await mysql.createEmployee(employees);
+
+  console.log(
+    `Added ${employees.first_name} ${employees.last_name} to the database`
+  );
+
+  startMenu();
+}
+
+function quit() {
+  console.log("Goodbye!");
+  process.exit();
 }
