@@ -79,8 +79,12 @@ const startMenu = async () => {
     case "REMOVE_ROLE":
       removeRole();
       break;
-    default:
-      return quit();
+      case `Exit`:
+        orm.endConnection();
+        return;
+      default:
+        break;
+     
   }
 }
 // Shows the entire salary budget for a department - may not work correctly
