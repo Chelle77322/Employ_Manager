@@ -1,127 +1,151 @@
-async function menuViewDepartments(){
-    const departmentData = await orm.selectDepartment(departments.id);
-    console.table(departmentData);
-    return startMenu();
-   
-  }
-  const inquirer = require("inquirer");
+const inquirer = require("inquirer");
 
-const promptUser = {
-//Shows all user choices available
-listReturn : async(listChoices) => {
-    const questions = {
-        name: `startMenuChoice`,
-        type: `list`,
-        choices: listChoices.choices,
-    };
-    const {startMenuChoice} = await inquirer.prompt(questions);
-    return startMenuChoice;
-    
-},
-//Confirms the choice made by user
+const userPrompt = {
+    //Shows all user choices available
+    listReturn : async(listChoices) => {
+        const questions = {
+            name: `startMenuChoice`,
+            type: `list`,
+            choices: listChoices.choices,
+        };
+        const {mainMenuChoice} = await inquirer.prompt(questions);
+        return mainMenuChoice;
+        
+    },
+    //Confirms the choice made by user
 confirmChoice: async () => {
     const questions = {
         message: `Select an option from the menu:`,
-        name: `confirmedChoice`,
+        name: `confirmChoice`,
         type: `confirm`,
     };
     const {confirmedChoice} = await inquirer.prompt(questions);
     return confirmedChoice;
 },
-//Gives all open choices to user with validation
-columnChoice: async (field, type, nullOption, foreignK) => {
+//Returns open ended choices. Validates against passed parameters
+colChoice: async (field, type, nullOption, FKvalue) => {
     const questions = {
-        message:`Enter a value for ${field}:`,
-        name: `valueChoice`,
-        type: `input`,
-        validate: async function (data) {
-            if (nullOption === "NO" && data === ""){
-                return "Cannot be blank";
-            }
-            else if (nullOption == "YES" && data === ""){
-                return true;
-            }
-//passes foreign key parameters
-if (typeof foreignK !== "undefined"){
-    for(k = 0; k < foreignK.length; k++){
-        if (String(Object.values(foreignK[k])) === String(data)){
-            return true;
+      message: `Enter a Value for ${field}:`,
+      name: `valueChoice`,
+      type: `input`,
+      validate: async function (data) {
+        //Checks if a null option is possible.
+        if (nullOption === "NO" && data === "") {
+          return "This entry can not be blank";
+        } else if (nullOption === "YES" && data === "") {
+          return true;
         }
-    }
-    if (nullOption === "NO"){
-        return `This doesn't match an existing ${field}. You need to enter another ${field} choice.`;
-    } else{
-        return `This doesn't match an existing ${field}. You need to enter another ${field} choice or leave it empty`;
-    }
-   
+        //Checks if foreign key parameters were passed and whether the input meets the requirement
+        if (typeof fkValues !== "undefined") {
+          for (j = 0; j < fkValues.length; j++) {
+            if (String(Object.values(fkValues[j])) === String(data)) {
+              return true;
+            }
+          }
+          if (nullOption === "NO") {
+            return `This value does not match an existing ${field}. Enter a valid ${field} choice.`;
+          } else {
+            return `This value does not match an existing ${field}. Enter a valid ${field} choice or leave it blank.`;
+          }
+        }
+        //Checks type from MySql columns and validates using JOI
+        if (type.toLowerCase().includes("varchar")) {
+          return joi.validate({ name: data }, schema, function (err, value) {
+            if (err) {
+              return `Value should be a string without special characters`;
+            }
+            return true;
+          });
+        }
+        if (type.toLowerCase().includes("int")) {
+          return joi.validate({ int: data }, schema, function (err, value) {
+            if (err) {
+              return `Value should be a positive integer`;
+            }
+            return true;
+          });
+        }
+        if (type.toLowerCase().includes(`decimal(10,0)`)) {
+          return joi.validate({ decimal: data }, schema, function (err, value) {
+            if (err) {
+              return `Value should be a positive number with no decimal points`;
+            }
+            return true;
+          });
+        }
+      },
     };
+    const { valueChoice } = await inquirer.prompt(questions);
+    return valueChoice;
+  },
 
-const {valueChoice} = await inquirer.prompt(questions);
-return valueChoice;
-
-},
-valueChoice: async (valueName) => {
+  //Value choice without validation
+  valueChoice: async (valueName) => {
     const questions = {
-        message: `Enter a value for ${valueName}:`,
-        name : `valueChoice`,
-        type: `input`,
+      message: `Enter a Value for ${valueName}:`,
+      name: `valueChoice`,
+      type: `input`,
     };
-   const {valueChoice} = await inquirer.prompt(questions);
-   return valueChoice;
-    },
-    startMenu: () => {
-        const options = {
-            choices: [
-                `View all records`,
-                `Create a new employee record`,
-                `Modify an existing record`,
-                `Deletes an existing record`,
-                `Finish`,
-            ],
-        };
-        
-       return promptUser.listReturn(options);
-    
-    },
-    
-    menuCreate: () => {
-        const options ={
-            choices:[`Create an Employee`, `Create a Role`, `Create a Department`],
-        };
-        return promptUser.listReturn(options);
-    },
-    menuView: () => {
-        const options = {
-            choices: [`View all employees`, `View all roles`, `View all departments`],
-        };
-        return promptUser.listReturn(options);
-    },
-    menuModify: () => {
-        const options = {
-            choices: [`Modify an Employee`, `Modify a Role`, `Modify a Department`],
-        };
-        return promptUser.listReturn(options);
-    },
-    menuDelete: () => {
-        const options = {
-            choices: [`Remove a Employee`, `Remove a Role`, `Remove a Department`],
-        };
-        return promptUser.listReturn(options);
-    },
-    filterChoice: () => {
-        const options = {
-            choices: [`View All`,`View with filter applied`],
-        };
-        return promptUser.listReturn(options);
-    },
-    choiceArray: (array) => {
-        const options = {
-            choices: array,
-        };
-        return promptUser.listReturn(options);
-    },
+    const { valueChoice } = await inquirer.prompt(questions);
+    return valueChoice;
+  },
+
+  //Menus where only the data being passed as choices changes.
+  startMenu: () => {
+    const options = {
+      choices: [
+        `View Records`,
+        `Create a Record`,
+        "Modify a Record",
+        "Delete a Record",
+        "View Department Budget",
+        "Exit",
+      ],
+    };
+    return userPrompt.listReturn(options);
+  },
+
+  menuCreate: () => {
+    const options = {
+      menuChoice: [`Create an Employee`, `Create a Role`, `Create a Department`],
+    };
+    return userPrompt.listReturn(options);
+  },
+
+  menuView: () => {
+    const options = {
+      menuViewChoice: [`View Employees`, `View Roles`, `View Departments`],
+    };
+    return userPrompt.listReturn(options);
+  },
+
+  menuModify: () => {
+    const options = {
+      menuModifyChoice: [`Modify an Employee`, `Modify a Role`, `Modify a Department`],
+    };
+    return userPrompt.listReturn(options);
+  },
+
+  menuDelete: () => {
+    const options = {
+      menuDelete: [`Delete an Employee`, `Delete a Role`, `Delete a Department`],
+    };
+    return userPrompt.listReturn(options);
+  },
+  filterChoice: () => {
+    const options = {
+      menuFilter: [`View All`, `View With Filter`],
+    };
+    return userPrompt.listReturn(options);
+  },
+
+  arrayChoice: (array) => {
+    const options = {
+      choices: array,
+    };
+    return userPrompt.listReturn(options);
+  },
 };
-}
-};
-module.exports = promptUser;
-    
+
+module.exports = userPrompt;
+

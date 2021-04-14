@@ -1,6 +1,6 @@
 //*Declares the npm packages required for the scripts to work
 const logo = require('asciiart-logo');
-const {prompt} = require('inquirer');
+//const {prompt} = require('inquirer');
 const mysql = require('mysql');
 
 //Declaring variable for ORM part
@@ -96,12 +96,12 @@ const departmentViewData = await orm.selectWhereAsync(
 //Are we actually getting anything here
 if(departmentViewData.length === 0){
   console.log(`No ID was found in the actual database`);
-  const departmentRetry = await userPrompt.cofirmsChoice();
+  const departmentRetry = await userPrompt.confirmedChoice();
   if (!departmentRetry){
     return startMenu();
   }else {
     return departmentMenu();
-  }
+  } 
 }
 const departmentBudgetData = await orm.selectDepartmentBudget(departments_id);
 console.table(departmentBudgetData);
@@ -141,7 +141,7 @@ const deleteViewData = await orm.selectWhereAsync(
 if(deleteViewData.length === 0){
   console.log("ID not found for deletion purposes");
   const retryDelete = await userPrompt.confirmChoice();
-
+cofirmsChoice
   if (!retryDelete){
 return startMenu();
   } else {
