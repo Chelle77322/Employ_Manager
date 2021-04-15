@@ -7,23 +7,26 @@ const userPrompt = {
             name: `startMenuChoice`,
             type: `list`,
             choices: listChoices.choices,
+            
         };
+        
         const {mainMenuChoice} = await inquirer.prompt(questions);
         return mainMenuChoice;
         
     },
     //Confirms the choice made by user
-confirmChoice: async () => {
+confirmedChoice: async () => {
     const questions = {
         message: `Select an option from the menu:`,
-        name: `confirmChoice`,
+        name: `confirmedChoice`,
         type: `confirm`,
     };
     const {confirmedChoice} = await inquirer.prompt(questions);
+  
     return confirmedChoice;
 },
 //Returns open ended choices. Validates against passed parameters
-colChoice: async (field, type, nullOption, FKvalue) => {
+columnChoice: async (field, type, nullOption, FKvalue) => {
     const questions = {
       message: `Enter a Value for ${field}:`,
       name: `valueChoice`,
@@ -75,19 +78,19 @@ colChoice: async (field, type, nullOption, FKvalue) => {
         }
       },
     };
-    const { valueChoice } = await inquirer.prompt(questions);
-    return valueChoice;
+    const { confirmedChoice } = await inquirer.prompt(questions);
+    return confirmedChoice;
   },
 
   //Value choice without validation
   valueChoice: async (valueName) => {
     const questions = {
       message: `Enter a Value for ${valueName}:`,
-      name: `valueChoice`,
+      name: `confirmedChoice`,
       type: `input`,
     };
-    const { valueChoice } = await inquirer.prompt(questions);
-    return valueChoice;
+    const { confirmedChoice } = await inquirer.prompt(questions);
+    return confirmedChoice;
   },
 
   //Menus where only the data being passed as choices changes.
@@ -122,8 +125,11 @@ colChoice: async (field, type, nullOption, FKvalue) => {
   menuModify: () => {
     const options = {
       menuModifyChoice: [`Modify an Employee`, `Modify a Role`, `Modify a Department`],
+     
     };
+    console.log(menuModifyChoice);
     return userPrompt.listReturn(options);
+    
   },
 
   menuDelete: () => {
