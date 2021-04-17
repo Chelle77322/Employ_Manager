@@ -10,8 +10,8 @@ const userPrompt = {
             
         };
         
-        const {mainMenuChoice} = await inquirer.prompt(questions);
-        return mainMenuChoice;
+        const {menuChoice} = await inquirer.prompt(questions);
+        return menuChoice;
         
     },
     //Confirms the choice made by user
@@ -25,72 +25,73 @@ confirmedChoice: async () => {
   
     return confirmedChoice;
 },
-//Returns open ended choices. Validates against passed parameters
-columnChoice: async (field, type, nullOption, FKvalue) => {
-    const questions = {
-      message: `Enter a Value for ${field}:`,
-      name: `valueChoice`,
-      type: `input`,
-      validate: async function (data) {
-        //Checks if a null option is possible.
-        if (nullOption === "NO" && data === "") {
-          return "This entry can not be blank";
-        } else if (nullOption === "YES" && data === "") {
-          return true;
-        }
+//Returns free choice options
+//columnChoice: async (field, type, nullOption, FKvalue) => {
+//    const questions = {
+ //     message: `Enter a Value for ${field}:`,
+ //     name: `valueChoice`,
+ //     type: `input`,
+ //     validate: async function (data) {
+ //       //Checks if a null option is possible.
+ //       if (nullOption === "NO" && data === "") {
+ //         return "This entry can not be blank";
+ //       } else if (nullOption === "YES" && data === "") {
+   //       return true;
+    //    }
         //Checks if foreign key parameters were passed and whether the input meets the requirement
-        if (typeof fkValues !== "undefined") {
-          for (j = 0; j < fkValues.length; j++) {
-            if (String(Object.values(fkValues[j])) === String(data)) {
-              return true;
-            }
-          }
-          if (nullOption === "NO") {
-            return `This value does not match an existing ${field}. Enter a valid ${field} choice.`;
-          } else {
-            return `This value does not match an existing ${field}. Enter a valid ${field} choice or leave it blank.`;
-          }
-        }
+       // if (typeof fkValues !== "undefined") {
+         // for (j = 0; j < fkValues.length; j++) {
+         //   if (String(Object.values(fkValues[j])) === String(data)) {
+          //    return true;
+          //  }
+         // }
+         // if (nullOption === "NO") {
+         //   return `This value does not match an existing ${field}. Enter a valid ${field} choice.`;
+         // } else {
+         //   return `This value does not match an existing ${field}. Enter a valid ${field} choice or leave it blank.`;
+        //  }
+      //  }
         //Checks type from MySql columns and validates using JOI
-        if (type.toLowerCase().includes("varchar")) {
-          return joi.validate({ name: data }, schema, function (err, value) {
-            if (err) {
-              return `Value should be a string without special characters`;
-            }
-            return true;
-          });
-        }
-        if (type.toLowerCase().includes("int")) {
-          return joi.validate({ int: data }, schema, function (err, value) {
-            if (err) {
-              return `Value should be a positive integer`;
-            }
-            return true;
-          });
-        }
-        if (type.toLowerCase().includes(`decimal(10,0)`)) {
-          return joi.validate({ decimal: data }, schema, function (err, value) {
-            if (err) {
-              return `Value should be a positive number with no decimal points`;
-            }
-            return true;
-          });
-        }
-      },
-    };
-    const { confirmedChoice } = await inquirer.prompt(questions);
-    return confirmedChoice;
-  },
+        //if (type.toLowerCase().includes("varchar")) {
+          //return joi.validate({ name: data }, schema, function (err, value) {
+            //if (err) {
+              //return `Value should be a string without special characters`;
+            //}
+            //return true;
+         // });
+       // }
+       // if (type.toLowerCase().includes("int")) {
+         // return joi.validate({ int: data }, schema, function (err, value) {
+          //  if (err) {
+            //  return `Value should be a positive integer`;
+           // }
+           // return true;
+          //});
+       // }
+       // if (type.toLowerCase().includes(`decimal(10,0)`)) {
+         // return joi.validate({ decimal: data }, //schema, function (err, value) {
+           // if (err) {
+             // return `Value should be a positive number with no decimal points`;
+           // }
+          //  return true;
+         // });
+       // }
+    //  },
+   // };
+  //  const { confirmedChoice } = await inquirer.prompt(questions);
+  //  return confirmedChoice;
+  //},
 
   //Value choice without validation
-  valueChoice: async (valueName) => {
+  Vchoice: async (valueName) => {
     const questions = {
       message: `Enter a Value for ${valueName}:`,
       name: `confirmedChoice`,
       type: `input`,
     };
-    const { confirmedChoice } = await inquirer.prompt(questions);
-    return confirmedChoice;
+    const { Vchoice } = await inquirer.prompt(questions);
+  
+    return Vchoice;
   },
 
   //Menus where only the data being passed as choices changes.
@@ -112,6 +113,7 @@ columnChoice: async (field, type, nullOption, FKvalue) => {
     const options = {
       menuChoice: [`Create an Employee`, `Create a Role`, `Create a Department`],
     };
+    
     return userPrompt.listReturn(options);
   },
 
@@ -119,6 +121,7 @@ columnChoice: async (field, type, nullOption, FKvalue) => {
     const options = {
       menuViewChoice: [`View Employees`, `View Roles`, `View Departments`],
     };
+    
     return userPrompt.listReturn(options);
   },
 
@@ -127,7 +130,7 @@ columnChoice: async (field, type, nullOption, FKvalue) => {
       menuModifyChoice: [`Modify an Employee`, `Modify a Role`, `Modify a Department`],
      
     };
-    console.log(menuModifyChoice);
+  
     return userPrompt.listReturn(options);
     
   },

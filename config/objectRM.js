@@ -2,23 +2,22 @@ const connection = require('./connection');
 const orm = {
     endConnection: () => {
         connection.end ();
-console.log(connection);
     },
 //Select columns from any table in the employment_managementDB
-selectAsync: (tableColumn, tableName, sortColumn)=> {
-    return new Promise((resolve, reject) => {
-        const queryString = "SELECT ?? FROM ?? ORDER BY ??";
-        connection.query(
-            queryString,
-            [tableColumn, tableName, sortColumn],
-            (error, result) => {
-                if(error) reject(error);
-                resolve(result);
-            }
-        );
+//selectAsync: (tableColumn, tableName, sortColumn)=> {
+  //  return new Promise((resolve, reject) => {
+   //     const queryString = "SELECT ?? FROM ?? ORDER BY ??";
+     //   connection.query(
+       //     queryString,
+         //   [tableColumn, tableName, sortColumn],
+         //   (error, result) => {
+          //      if(error) reject(error);
+           //     resolve(result);
+          //  }
+       // );
 
-    });
-},
+   // });
+//},
 //Selects columns from any table when they met a single where condition
 selectWhereAsync: (tableColumn, tableName, columnName, columnValue, sortColumn) => {
     return new Promise((resolve, reject) => {
@@ -41,7 +40,6 @@ selectDepartments: (id) => {
         connection.query(queryString, [id], (error, result)=> {
             if (error) reject (error);
             resolve(result);
-            console.log(connection);
         });
     });
 },
@@ -60,18 +58,18 @@ createAsync: (tableName, columnName, columnValue) => {
     });
 },
 //Add new employee records to the tables in the database
-createEmpAsync: (tableName, columnName, columnValue) =>{
-    return new Promise ((resolve, reject) => {
-        const queryString = "INSERT INTO ?? (??) VALUES ?";
-        connection.query (
-            queryString, 
-            [tableName, columnName, columnValue],
-            (error, result) => {
-                if (error) reject(error);
-            }
-        );
-    });
-},
+//createEmpAsync: (tableName, columnName, columnValue) =>{
+  //  return new Promise ((resolve, reject) => {
+    //    const queryString = "INSERT INTO ?? (??) VALUES ?";
+      //  connection.query (
+        //    queryString, 
+          //  [tableName, columnName, columnValue],
+            //(error, result) => {
+              //  if (error) reject(error);
+           // }
+       // );
+   // });
+//},
 //Updates records in the database
 updateAsync: (tableName, columnName, columnValue, record_id) => {
     return new Promise ((resolve, reject)=>{
