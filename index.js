@@ -441,7 +441,7 @@ function updateEmployeeManager(employeeID, managerObjectArray) {
             const userInputSplitAtId = userChoice.new_Manager.split(" ", 2);
             const newManagerID = userInputSplitAtId[1];
 
-const queryUpdateNewManager = `UPDATE employees SET employees.manager_id = (?) WHERE employee.id = (?)`
+const queryUpdateNewManager = `UPDATE employees SET employees.manager_id = (?) WHERE employees.id = (?)`
 
 connection.query(queryUpdateNewManager, [newManagerID, employeeID], function (error, result) {
     if (error) {
@@ -455,7 +455,7 @@ connection.query(queryUpdateNewManager, [newManagerID, employeeID], function (er
 }
 
 function viewAllRoles() {
-    const query = `SELECT role.title, role.salary, department.name FROM role INNER JOIN department ON department.id = role.department_id`
+    const query = `SELECT roles.title, roles.salary, departments.name FROM roles INNER JOIN departments ON departments.id = roles.department_id`
     const roleTable = new querySQL(query);
 
     roleTable.standard_tableQuery(startMenu);
@@ -463,8 +463,8 @@ function viewAllRoles() {
 
 function allDepartments() {
 
-    const query = `SELECT department.name
-                    FROM department`
+    const query = `SELECT departments.name
+                    FROM departments`
 
     const depTable = new querySQL(query);
 
@@ -473,7 +473,7 @@ function allDepartments() {
 
 function addRole() {
 
-    const queryDepartment = "SELECT department.name FROM department;"
+    const queryDepartment = "SELECT departments.name FROM departments;"
     connection.query(queryDepartment, function (error, result) {
 
         if (error) throw error
@@ -483,21 +483,21 @@ function addRole() {
             depNameArr.push(result[i].name)
         }
 
-        const whatRole = new startInquirer(typeInquire[0], 'role_to_add', questions.newRole)
-        const whatSalary = new startInquirer(typeInquire[0], 'role_salary', questions.salary)
-        const whatDepartment = new startInquirer(typeInquire[2], 'department', questions.department, depNameArr)
+        const whatRole = new startInquirer(typeInquire[0], 'roles_to_add', questions.newRole)
+        const whatSalary = new startInquirer(typeInquire[0], 'roles_salary', questions.salary)
+        const whatDepartment = new startInquirer(typeInquire[2], 'departments', questions.departments, depNameArr)
 
 
         Promise.all([whatRole.ask(), whatSalary.ask(), whatDepartment.ask()]).then(prompts => {
             inquirer.prompt(prompts).then(userChoices => {
 
-                const getDepId = `SELECT department.id FROM department WHERE department.name = (?);`
-                connection.query(getDepId, userChoices.department, function (error, result) {
+                const getDepId = `SELECT departments.id FROM departments WHERE departments.name = (?);`
+                connection.query(getDepId, userChoices.departments, function (error, result) {
                     if (error) {
                         throw error
                     }
 
-                    const addRolequery = `INSERT INTO role (role.title, role.salary, role.department_id)
+                    const addRolequery = `INSERT INTO roles (roles.title, roles.salary, roles.departments_id)
                                     VALUES ( (?), (?), (?));`
                     const addRole = new querySQL(addRolequery, [userChoices.role_to_add, userChoices.role_salary, result[0].id]);
 
@@ -516,7 +516,7 @@ function deleteRole(compRolesArr) {
     const whatRole = new startInquirer(typeInquire[2], 'role_to_delete', questions.deleteRole, compRolesArr);
     inquirer.prompt([whatRole.ask()]).then(userChoice => {
 
-        const role_id_Query = `SELECT role.id FROM role WHERE role.title = (?);`
+        const role_id_Query = `SELECT roles.id FROM roles WHERE roles.title = (?);`
         connection.query(role_id_Query, userChoice.role_to_delete, function (error, result) {
 
             const roleDeleteID = result[0].id;
@@ -527,13 +527,13 @@ function deleteRole(compRolesArr) {
 //Role found in other departments
  console.log("Role found in multiple departments!");
 
-const departmentsWithRolequery = `SELECT department.dep_name, role.dep_id FROM department INNER JOIN role on role.department_id = department.id AND role.title = (?);`
+const departmentsWithRolequery = `SELECT departments.name, roles.departments_id FROM departments INNER JOIN roles on roles.departments_id = departments.id AND roles.title = (?);`
 
 connection.query(departmentsWithRolequery, userChoice.role_to_delete, function (error, result) {
     if (error) throw error
         const departmentsWithRoleArr = [];
             for (let department of result) {
-                        departmentsWithRoleArr.push(department);
+                        departmentsWithRoleArr.push(departments);
                     }
 
                     const whichDeparment = new startInquirer(typeInquire[2], 'department_to_delete_Role_From', questions.departmentDeleteRole, departmentsWithRoleArr);
@@ -541,19 +541,19 @@ connection.query(departmentsWithRolequery, userChoice.role_to_delete, function (
                     inquirer.prompt([whichDeparment.ask()]).then(userChoice => {
                         console.log(result);
                         const departmentName_ID_Arr = result.filter(department => {
-                            if (department.name == userChoice.department_to_delete_Role_From) {
+                            if (departments.name == userChoice.department_to_delete_Role_From) {
                                 return true;
                             }
                         })
 
-                        deleteRoleQuery2 = "DELETE FROM role WHERE role.title = (?) AND role.department_id = (?)"
-                        const deleteInstance2 = new querySQL(deleteRoleQuery2, [roleDeleteTitle, departmentName_ID_Arr[0].department_id])
+                        deleteRoleQuery2 = "DELETE FROM roles WHERE roles.title = (?) AND roles.departments_id = (?)"
+                        const deleteInstance2 = new querySQL(deleteRoleQuery2, [roleDeleteTitle, departmentName_ID_Arr[0].departments_id])
                         deleteInstance2.delete(startMenu);
                     })
                 })
 
             } else {
-                const deleteRoleQuery = "DELETE FROM role WHERE role.id = (?);"
+                const deleteRoleQuery = "DELETE FROM roles WHERE rolse.id = (?);"
                 const deleteInstance = new querySQL(deleteRoleQuery, roleDeleteID);
                 deleteInstance.delete(startMenu);
             }
