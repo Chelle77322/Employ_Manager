@@ -24,7 +24,7 @@ const startInquirer = require('./lib/inquirer.js');
 const typeInquire = ['input', 'confirm', 'list'];
 const userPrompt = require('./lib/userPrompt.js');
 const choices = require ('./lib/choices.js');
-const querySQL = require('./lib/querySQL.js');
+//const querySQL = require('./lib/querySQL.js');
 
 
 
@@ -567,9 +567,9 @@ function addDep(depNameArr) {
 
     inquirer.prompt([whatDep.ask()]).then(userChoice => {
 
-        const alreadyExist = depNameArr.filter(department => {
+        const alreadyExist = depNameArr.filter(departments => {
 
-            if (department.name == userChoice.dep_to_add) return true;
+            if (departments.name == userChoice.dep_to_add) return true;
         })
 
         if (alreadyExist.length >= 1) {
