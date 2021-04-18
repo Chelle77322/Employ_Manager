@@ -3,31 +3,30 @@ const logo = require('asciiart-logo');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const path = require("path");
+require("console.table");
+
+const {employees, departments, roles} = require('./models');
+
 
 //Sequelize Connection information
 const express = require('express');
-const sequelize = require('./config/connection.js');
+const sequelize = require('./config/connection');
 const app = express();
+const PORT = process.env.PORT|| 3306;
 
 //Declaring variable for ORM part
 const orm = require("./config/objectRM.js");
 const promptUser = require("./lib/userPrompt");
-const table = require('console.table');
+
 const start = require('./lib/inquirer.js');
 
 //App Settings
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
-//Sequelize Authentication is here
-sequelize.authenticate().then(()=>{
-    console.log('Connection to mySQL database has been established');
-}).catch(error =>{
-    console.log('We are unable to connect to the mySQL database', error);
-}).finally (() =>{
-    sequelize.close();
+sequelize.sync({ force: false }).then(() => {
     startMenu();
-});
+  });
 
 init();
 //Loads the ascii logo 
@@ -37,14 +36,14 @@ const EMlogo = logo ({ name: "Employment Manager",logoColor: 'magenta', borderCo
 console.log(EMlogo);
   
 };
-const startInquirer = require('./lib/inquirer.js');
-const typeInquire = ['input', 'confirm', 'list'];
-const userPrompt = require('./lib/userPrompt.js');
-const choices = require ('./lib/choices.js');
+//const startInquirer = require('./lib/inquirer.js');
+//const typeInquire = ['input', 'confirm', 'list'];
+//const userPrompt = require('./lib/userPrompt.js');
+//const choices = require ('./lib/choices.js');
 
 //const querySQL = require('./lib/querySQL.js');
 
-//Gives the user a menu 
+//Gives the user a menu to make a choice from
 const startMenu = () => {
     return inquirer.prompt ({
         name: "takeAction",
@@ -67,7 +66,7 @@ const startMenu = () => {
             "Click to modify an employee's manager",
             "Click to finish program",
         ],
-    }).then((takeAction)=>{
+    }).then((takeAction) => {
 
 switch (takeAction) {
 
@@ -118,24 +117,26 @@ case `Click to remove a department`:
     break;
 case `Finish`:
     orm.endConnection();
-    console.log(orm.endConnection());
+   
     return;
     default:
     break;
 };
         });
-};
+
 //View all employees function
 function menuViewEmployees() {
     console.log("Viewing all current employees\n");
-    var query = `SELECT employees.id, employees.first_name, employees.last_name, roles.salary, CONCAT(manager.first_name,' ', manager.last_name) AS manager FROM employees  LEFT JOIN roles ON employees.roles.id = roles.id LEFT JOIN departments ON departments.id = roles.departments.id LEFT JOIN employees.manager ON manager.id = employees.manager.id`
+    var query = `SELECT * FROM employees`
 
     sequelize.query(query, function(error, result){
         if(error) throw error;
-       console.table(result.length);
+       console.table(result);
+       console.log("All current employees have been views!\n");
         startMenu();
-    })
+    });
 };
+}
 // view all departments in the database
 function menuViewDepartments() {
     var query = 'SELECT * FROM departments';
